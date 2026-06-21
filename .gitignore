@@ -128,7 +128,6 @@ firebase-debug.log
 # ----------------------------
 # Docker
 # ----------------------------
-.dockerignore
 docker-compose.override.yml
 
 # ----------------------------

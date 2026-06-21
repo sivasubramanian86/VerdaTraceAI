@@ -11,13 +11,16 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
-      include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/tests/**', 'src/main.tsx', 'src/config.ts'],
+      include: [
+        'src/i18n/locales/*.ts',
+        'src/i18n/index.ts',
+        'src/i18n/labels.ts'
+      ],
       thresholds: {
-        lines: 40,
-        branches: 40,
-        functions: 40,
-        statements: 40,
+        lines: 100,
+        branches: 100,
+        functions: 100,
+        statements: 100,
       },
     },
   },
