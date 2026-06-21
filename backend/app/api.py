@@ -8,7 +8,96 @@ from fastapi import APIRouter
 from app.agents.adk_core import SessionState
 from app.agents.orchestrator import orchestrator
 
+from pydantic import BaseModel, Field
+
 router = APIRouter()
+
+
+class ProjectCreateRequest(BaseModel):
+    name: str = Field(..., description="Project name")
+    provider: str = Field("gcp", description="Cloud provider")
+    region: str = Field("us-central1", description="Cloud region")
+    model_family: str = Field("gemini-2.5-flash", description="Model family")
+    hardware: str = Field("GPU", description="Execution hardware")
+
+
+class ChatRequest(BaseModel):
+    query: str = Field(..., description="Conversational query")
+    provider: str = Field("gcp", description="Cloud provider")
+    region: str = Field("us-central1", description="Cloud region")
+    model_family: str = Field("gemini-2.5-flash", description="Model family")
+    media_type: str = Field("text", description="Media type for multimodal context")
+    media_count: int = Field(0, description="Media count")
+    media_duration_sec: float = Field(0.0, description="Media duration in seconds")
+
+
+class MCPToolRequest(BaseModel):
+    arguments: dict[str, Any] = Field(default_factory=dict, description="Tool arguments")
+
+
+class EvalRequest(BaseModel):
+    text: str = Field(..., description="Text to evaluate for safety/accuracy")
+
+
+class LifestyleRequest(BaseModel):
+    driving_km: float = Field(12000.0, description="Annual driving distance in km")
+    vehicle_type: str = Field("gas", description="Vehicle propulsion type")
+    diet_type: str = Field("average", description="Diet pattern")
+    electricity_kwh: float = Field(4000.0, description="Annual electricity use in kWh")
+    heating_source: str = Field("gas", description="Home heating fuel")
+    shopping_level: str = Field("medium", description="Consumer spending level")
+    recycling: bool = Field(True, description="Active household recycling")
+
+
+class UnstructuredIngestRequest(BaseModel):
+    unstructured_text: str = Field(..., description="Raw text of emissions report")
+
+
+class DigitalWasteRequest(BaseModel):
+    emails_count: int = Field(0, description="Active inbox email count")
+    cloud_storage_gb: float = Field(0.0, description="Cloud storage volume in GB")
+    duplicate_media_count: int = Field(0, description="Number of duplicate media files")
+    ai_usage_count: int = Field(0, description="Monthly AI calls count")
+
+
+class CommerceLogRequest(BaseModel):
+    store_name: str = Field(..., description="Merchant name")
+    location: str = Field(..., description="Transaction location")
+    amount_spent: float = Field(..., description="Transaction amount")
+    is_local_override: bool = Field(False, description="Manually override locality check")
+
+
+class FoodScanRequest(BaseModel):
+    product_name: str = Field(..., description="Product identifier")
+    origin: str = Field(..., description="Origin location")
+
+
+class TransitTripLogRequest(BaseModel):
+    mode: str = Field(..., description="Transit mode (e.g. Metro)")
+    distance_km: float = Field(..., description="Trip distance in km")
+
+
+class InfraFeedbackRequest(BaseModel):
+    description: str = Field(..., description="Description of the infra issue")
+    latitude: float = Field(..., description="Latitude coordinate")
+    longitude: float = Field(..., description="Longitude coordinate")
+    issue_type: str = Field(..., description="Issue category")
+
+
+class CircularItemShareRequest(BaseModel):
+    item_name: str = Field(..., description="Item to share")
+    owner: str = Field("Neighbor", description="Lender name")
+    action: str = Field("lend", description="Share action (lend/borrow)")
+
+
+class PartnerCheckoutRequest(BaseModel):
+    cart_items: list[dict[str, Any]] = Field(default_factory=list, description="Checkout cart items")
+
+
+class LocalizeNarrationRequest(BaseModel):
+    text: str = Field(..., description="Content to translate and narrate")
+    target_lang: str = Field("en", description="Target language code")
+
 
 
 def load_mcp_server() -> Any:
@@ -45,17 +134,17 @@ async def list_projects() -> dict:
 
 
 @router.post("/projects")
-async def create_project(payload: dict) -> dict:
+async def create_project(payload: ProjectCreateRequest) -> dict:
     """Onboard a new project via ProjectOnboardingAgent."""
     session = SessionState()
     result = await orchestrator.execute(
         {
             "intent": "onboard",
-            "name": payload.get("name"),
-            "provider": payload.get("provider", "gcp"),
-            "region": payload.get("region", "us-central1"),
-            "model_family": payload.get("model_family", "gemini-1.5-pro"),
-            "hardware": payload.get("hardware", "GPU"),
+            "name": payload.name,
+            "provider": payload.provider,
+            "region": payload.region,
+            "model_family": payload.model_family,
+            "hardware": payload.hardware,
         },
         session,
     )
@@ -109,16 +198,16 @@ async def get_emissions(
 
 
 @router.post("/chat")
-async def chat_copilot(payload: dict) -> dict:
+async def chat_copilot(payload: ChatRequest) -> dict:
     """Deliver a context-caching conversational response from GreenCopilotChatAgent."""
     session = SessionState()
-    query = payload.get("query", "")
-    provider = payload.get("provider", "gcp")
-    region = payload.get("region", "us-central1")
-    model_family = payload.get("model_family", "gemini-1.5-pro")
-    media_type = payload.get("media_type", "text")
-    media_count = payload.get("media_count", 0)
-    media_duration_sec = payload.get("media_duration_sec", 0.0)
+    query = payload.query
+    provider = payload.provider
+    region = payload.region
+    model_family = payload.model_family
+    media_type = payload.media_type
+    media_count = payload.media_count
+    media_duration_sec = payload.media_duration_sec
 
     # Ingest search/prompt parameters
     await orchestrator.execute(
@@ -145,9 +234,9 @@ async def chat_copilot(payload: dict) -> dict:
 
 
 @router.post("/mcp/tool/{tool_name}")
-async def call_mcp_tool(tool_name: str, payload: dict) -> dict:
+async def call_mcp_tool(tool_name: str, payload: MCPToolRequest) -> dict:
     """Directly interface with the MCP server tool schemas."""
-    arguments = payload.get("arguments", {})
+    arguments = payload.arguments
     output_str = mcp_server.call_tool(tool_name, arguments)
     try:
         return json.loads(output_str)
@@ -163,27 +252,27 @@ async def get_mcp_prompt(prompt_name: str, workspace_id: str = "ws_default") -> 
 
 
 @router.post("/eval")
-async def evaluate_output(payload: dict) -> dict:
+async def evaluate_output(payload: EvalRequest) -> dict:
     """Run security check and output validation via EvalAndGuardrailAgent."""
     session = SessionState()
-    result = await orchestrator.execute({"intent": "eval", "text": payload.get("text", "")}, session)
+    result = await orchestrator.execute({"intent": "eval", "text": payload.text}, session)
     return result
 
 
 @router.post("/lifestyle/emissions")
-async def get_lifestyle_emissions(payload: dict) -> dict:
+async def get_lifestyle_emissions(payload: LifestyleRequest) -> dict:
     """Calculate lifestyle carbon footprint using LifestyleEstimationAgent."""
     session = SessionState()
     result = await orchestrator.execute(
         {
             "intent": "lifestyle",
-            "driving_km": payload.get("driving_km", 12000.0),
-            "vehicle_type": payload.get("vehicle_type", "gas"),
-            "diet_type": payload.get("diet_type", "average"),
-            "electricity_kwh": payload.get("electricity_kwh", 4000.0),
-            "heating_source": payload.get("heating_source", "gas"),
-            "shopping_level": payload.get("shopping_level", "medium"),
-            "recycling": payload.get("recycling", True),
+            "driving_km": payload.driving_km,
+            "vehicle_type": payload.vehicle_type,
+            "diet_type": payload.diet_type,
+            "electricity_kwh": payload.electricity_kwh,
+            "heating_source": payload.heating_source,
+            "shopping_level": payload.shopping_level,
+            "recycling": payload.recycling,
         },
         session,
     )
@@ -191,11 +280,11 @@ async def get_lifestyle_emissions(payload: dict) -> dict:
 
 
 @router.post("/ingest/unstructured")
-async def ingest_unstructured_data(payload: dict) -> dict:
+async def ingest_unstructured_data(payload: UnstructuredIngestRequest) -> dict:
     """Parse unstructured carbon report via Scope3UnstructuredIngestAgent."""
     session = SessionState()
     result = await orchestrator.execute(
-        {"intent": "ingest_unstructured", "unstructured_text": payload.get("unstructured_text", "")}, session
+        {"intent": "ingest_unstructured", "unstructured_text": payload.unstructured_text}, session
     )
     return result
 
@@ -352,16 +441,16 @@ async def get_digital_waste() -> dict:
 
 
 @router.post("/loops/digital")
-async def update_digital_waste(payload: dict) -> dict:
+async def update_digital_waste(payload: DigitalWasteRequest) -> dict:
     """Run DigitalWasteAgent and update digital footprint metrics."""
     session = SessionState()
     result = await orchestrator.execute(
         {
             "intent": "digital_clean",
-            "emails_count": payload.get("emails_count", 0),
-            "cloud_storage_gb": payload.get("cloud_storage_gb", 0.0),
-            "duplicate_media_count": payload.get("duplicate_media_count", 0),
-            "ai_usage_count": payload.get("ai_usage_count", 0),
+            "emails_count": payload.emails_count,
+            "cloud_storage_gb": payload.cloud_storage_gb,
+            "duplicate_media_count": payload.duplicate_media_count,
+            "ai_usage_count": payload.ai_usage_count,
         },
         session,
     )
@@ -411,17 +500,17 @@ async def get_commerce_transactions() -> dict:
 
 
 @router.post("/loops/commerce")
-async def log_commerce_purchase(payload: dict) -> dict:
+async def log_commerce_purchase(payload: CommerceLogRequest) -> dict:
     """Run Scope3CommerceAgent to log transaction and award carbon credits."""
     session = SessionState()
     session.set("credits_ledger", local_loops_db["credits_ledger"])
     result = await orchestrator.execute(
         {
             "intent": "local_commerce",
-            "store_name": payload.get("store_name"),
-            "location": payload.get("location"),
-            "amount_spent": payload.get("amount_spent", 0.0),
-            "is_local_override": payload.get("is_local_override", False),
+            "store_name": payload.store_name,
+            "location": payload.location,
+            "amount_spent": payload.amount_spent,
+            "is_local_override": payload.is_local_override,
         },
         session,
     )
@@ -442,11 +531,11 @@ async def log_commerce_purchase(payload: dict) -> dict:
 
 
 @router.post("/loops/food/scan")
-async def scan_food_miles(payload: dict) -> dict:
+async def scan_food_miles(payload: FoodScanRequest) -> dict:
     """Run FoodMileAgent to scan label and suggest alternative swappings."""
     session = SessionState()
     result = await orchestrator.execute(
-        {"intent": "food_miles", "product_name": payload.get("product_name"), "origin": payload.get("origin")}, session
+        {"intent": "food_miles", "product_name": payload.product_name, "origin": payload.origin}, session
     )
     local_loops_db["food"].insert(0, result)
     return result
@@ -465,12 +554,12 @@ async def get_transit_logs() -> dict:
 
 
 @router.post("/loops/transit")
-async def log_transit_trip(payload: dict) -> dict:
+async def log_transit_trip(payload: TransitTripLogRequest) -> dict:
     """Run TransitGamifierAgent to log mileage and calculate carbon savings."""
     session = SessionState()
     session.set("credits_ledger", local_loops_db["credits_ledger"])
     result = await orchestrator.execute(
-        {"intent": "transit_log", "mode": payload.get("mode"), "distance_km": payload.get("distance_km", 0.0)}, session
+        {"intent": "transit_log", "mode": payload.mode, "distance_km": payload.distance_km}, session
     )
     trip_item = {
         "mode": result["mode"],
@@ -484,17 +573,17 @@ async def log_transit_trip(payload: dict) -> dict:
 
 
 @router.post("/loops/transit/feedback")
-async def submit_infra_feedback(payload: dict) -> dict:
+async def submit_infra_feedback(payload: InfraFeedbackRequest) -> dict:
     """Run InfraFeedbackAgent to log crowdsourced feedback."""
     session = SessionState()
     session.set("infra_feedbacks", local_loops_db["infra_feedback"])
     result = await orchestrator.execute(
         {
             "intent": "infra_gap",
-            "description": payload.get("description"),
-            "latitude": payload.get("latitude"),
-            "longitude": payload.get("longitude"),
-            "issue_type": payload.get("issue_type"),
+            "description": payload.description,
+            "latitude": payload.latitude,
+            "longitude": payload.longitude,
+            "issue_type": payload.issue_type,
         },
         session,
     )
@@ -508,16 +597,16 @@ async def get_circular_items() -> dict:
 
 
 @router.post("/loops/circular")
-async def share_circular_item(payload: dict) -> dict:
+async def share_circular_item(payload: CircularItemShareRequest) -> dict:
     """Run CircularEconomyAgent to lend/borrow items and offset embedded manufacturing carbon."""
     session = SessionState()
     session.set("credits_ledger", local_loops_db["credits_ledger"])
     result = await orchestrator.execute(
         {
             "intent": "circular_share",
-            "item_name": payload.get("item_name"),
-            "owner": payload.get("owner", "Neighbor"),
-            "action": payload.get("action", "lend"),
+            "item_name": payload.item_name,
+            "owner": payload.owner,
+            "action": payload.action,
         },
         session,
     )
@@ -559,24 +648,24 @@ async def get_credits_ledger() -> dict:
 
 
 @router.post("/partner/checkout")
-async def partner_checkout(payload: dict) -> dict:
+async def partner_checkout(payload: PartnerCheckoutRequest) -> dict:
     """Exposes B2B2C Sustainable checkout API via PartnerIntegrationAgent."""
     session = SessionState()
     result = await orchestrator.execute(
-        {"intent": "partner_cart", "cart_items": payload.get("cart_items", [])}, session
+        {"intent": "partner_cart", "cart_items": payload.cart_items}, session
     )
     return result
 
 
 @router.post("/narration/localize")
-async def localize_narration(payload: dict) -> dict:
+async def localize_narration(payload: LocalizeNarrationRequest) -> dict:
     """Provide localization packet and audio summary template via LocalizationAndNarrationAgent."""
     session = SessionState()
     result = await orchestrator.execute(
         {
             "intent": "localize_narrate",
-            "text": payload.get("text", ""),
-            "target_lang": payload.get("target_lang", "en"),
+            "text": payload.text,
+            "target_lang": payload.target_lang,
         },
         session,
     )
