@@ -1,58 +1,77 @@
 # deploy_cloud_run.ps1 - Build and deploy VerdaTraceAI Backend to Google Cloud Run
+# Usage: ./deploy_cloud_run.ps1 [PROJECT_ID] [REGION]
 
-# Stop on errors
 $ErrorActionPreference = "Stop"
 
-# Try to parse Project ID and Region from backend env file
-$envFilePath = "../backend/.env"
-$gcpProjectId = "promptwars-demo-project"
-$region = "us-central1"
+# ─── Configuration ───────────────────────────────────────────────────────────
+$gcpProjectId = if ($args[0]) { $args[0] } else { "verdatraceai-500110" }
+$region       = if ($args[1]) { $args[1] } else { "us-central1" }
+$serviceName  = "verdatrace-backend"
+$imageName    = "gcr.io/$gcpProjectId/$serviceName`:latest"
 
-if (Test-Path $envFilePath) {
-    $envContent = Get-Content $envFilePath
-    foreach ($line in $envContent) {
-        if ($line -match "^GCP_PROJECT_ID\s*=\s*(.+)") {
-            $gcpProjectId = $Matches[1].Trim()
-        }
-        if ($line -match "^VERTEX_REGION\s*=\s*(.+)") {
-            $region = $Matches[1].Trim()
-        }
-    }
-}
-
-$serviceName = "verdatrace-backend"
+# Comma-separated list of EXACT allowed origins (no trailing slash, no wildcard)
+$allowedOrigins = "https://verdatraceai.web.app,https://verdatraceai.firebaseapp.com"
 
 Write-Host "=============================================" -ForegroundColor Cyan
-Write-Host "Deploying VerdaTraceAI Backend to Cloud Run..." -ForegroundColor Cyan
-Write-Host "Project ID: $gcpProjectId" -ForegroundColor Cyan
-Write-Host "Region:     $region" -ForegroundColor Cyan
+Write-Host "  VerdaTraceAI — Cloud Run Backend Deploy"   -ForegroundColor Cyan
+Write-Host "  Project  : $gcpProjectId"                   -ForegroundColor Cyan
+Write-Host "  Region   : $region"                         -ForegroundColor Cyan
+Write-Host "  Image    : $imageName"                      -ForegroundColor Cyan
 Write-Host "=============================================" -ForegroundColor Cyan
 
-# Configure gcloud project
-Write-Host "Setting gcloud project context..." -ForegroundColor Yellow
+# ─── Step 1: Set gcloud project ──────────────────────────────────────────────
+Write-Host "`n[1/5] Setting gcloud project context..." -ForegroundColor Yellow
 gcloud config set project $gcpProjectId
 
-# 1. Build backend using Google Cloud Build
-Write-Host "Submitting build to Cloud Build..." -ForegroundColor Yellow
+# ─── Step 2: Enable required APIs ────────────────────────────────────────────
+Write-Host "`n[2/5] Enabling required GCP APIs..." -ForegroundColor Yellow
+gcloud services enable `
+  run.googleapis.com `
+  cloudbuild.googleapis.com `
+  artifactregistry.googleapis.com `
+  aiplatform.googleapis.com `
+  secretmanager.googleapis.com `
+  --project $gcpProjectId
+
+# ─── Step 3: Build via Cloud Build → push to Container Registry ──────────────
+Write-Host "`n[3/5] Submitting build to Cloud Build..." -ForegroundColor Yellow
 Push-Location ../backend
 try {
-    gcloud builds submit --tag "gcr.io/$gcpProjectId/$serviceName:latest" .
+    gcloud builds submit `
+      --tag $imageName `
+      --project $gcpProjectId `
+      .
 } finally {
     Pop-Location
 }
 
-# 2. Deploy backend to Cloud Run
-Write-Host "Deploying service to Cloud Run..." -ForegroundColor Yellow
+# ─── Step 4: Deploy to Cloud Run ─────────────────────────────────────────────
+Write-Host "`n[4/5] Deploying to Cloud Run..." -ForegroundColor Yellow
 gcloud run deploy $serviceName `
-  --image "gcr.io/$gcpProjectId/$serviceName:latest" `
+  --image $imageName `
   --region $region `
   --platform managed `
   --allow-unauthenticated `
-  --set-env-vars="LLM_PROVIDER=vertex-ai,GCP_PROJECT_ID=$gcpProjectId,VERTEX_REGION=$region"
+  --port 8080 `
+  --cpu 1 `
+  --memory 1Gi `
+  --min-instances 0 `
+  --max-instances 5 `
+  --timeout 60 `
+  --concurrency 80 `
+  --set-env-vars="GCP_PROJECT_ID=$gcpProjectId,VERTEX_REGION=$region,LLM_PROVIDER=vertex-ai,USE_ALLOYDB=False,ALLOWED_ORIGINS=$allowedOrigins" `
+  --project $gcpProjectId
 
+# ─── Step 5: Output ──────────────────────────────────────────────────────────
+Write-Host "`n[5/5] Deployment complete!" -ForegroundColor Green
 Write-Host "=============================================" -ForegroundColor Green
-Write-Host "VerdaTraceAI Backend successfully deployed!" -ForegroundColor Green
+$serviceUrl = gcloud run services describe $serviceName `
+  --region $region `
+  --project $gcpProjectId `
+  --format="value(status.url)"
+Write-Host "  Backend URL : $serviceUrl"           -ForegroundColor Green
+Write-Host "  Health check: $serviceUrl/health"    -ForegroundColor Green
+Write-Host "  Swagger UI  : $serviceUrl/docs"      -ForegroundColor Green
 Write-Host "=============================================" -ForegroundColor Green
-
-# Output URL
-gcloud run services describe $serviceName --region $region --format='value(status.url)'
+Write-Host ""
+Write-Host "NEXT: Update Firebase frontend VITE_API_BASE_URL to: $serviceUrl" -ForegroundColor Magenta

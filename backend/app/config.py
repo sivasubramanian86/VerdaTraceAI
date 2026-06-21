@@ -18,7 +18,7 @@ class Settings:
     ALLOYDB_URI: str = os.getenv("ALLOYDB_URI", "")
 
     # Vertex AI Config
-    GCP_PROJECT_ID: str = os.getenv("GCP_PROJECT_ID", "promptwars-demo-project")
+    GCP_PROJECT_ID: str = os.getenv("GCP_PROJECT_ID", "verdatraceai-500110")
     VERTEX_REGION: str = os.getenv("VERTEX_REGION", "us-central1")
 
     # Multi-LLM Config
@@ -27,7 +27,17 @@ class Settings:
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
     ALLOWED_ORIGINS: list[str] = [
         origin.strip()
-        for origin in os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
+        for origin in os.getenv(
+            "ALLOWED_ORIGINS",
+            (
+                "http://localhost:5173,"
+                "http://localhost:5174,"
+                "http://127.0.0.1:5173,"
+                "http://127.0.0.1:5174,"
+                "https://verdatraceai.web.app,"
+                "https://verdatraceai.firebaseapp.com"
+            ),
+        ).split(",")
         if origin.strip()
     ]
 
