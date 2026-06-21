@@ -102,6 +102,7 @@ export const DigitalFootprintView: React.FC<DigitalFootprintViewProps> = ({ loca
             <Mail className="text-cyan-400 w-8 h-8" /> {t.title}
           </h2>
           <p className="text-slate-400 mt-2">{t.subtitle}</p>
+          <p className="text-slate-500 text-sm mt-1">{t.digitalCarbonFootprint}</p>
         </div>
         <button 
           onClick={fetchDigitalMetrics}

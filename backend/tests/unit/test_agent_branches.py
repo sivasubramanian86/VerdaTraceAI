@@ -7,8 +7,6 @@ from app.agents.specialists import (
     AgenticRAGExplainerAgent,
     GreenCopilotChatAgent,
     MCPDataConnectorAgent,
-    DigitalWasteAgent,
-    Scope3CommerceAgent,
     LocalizationAndNarrationAgent
 )
 from app.services.llm_service import llm_service

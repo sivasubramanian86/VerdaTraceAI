@@ -93,6 +93,8 @@ export interface TranslationSchemaDashboard {
   paretoExplainTitle: string;
   paretoExplainDesc: string;
   optimalZonesTip: string;
+  aiWorkloadCarbonFootprint: string;
+  scope3EmissionsPhrase: string;
 }
 
 export interface TranslationSchemaAgentPipeline {
@@ -152,6 +154,7 @@ export interface TranslationSchemaSimulator {
   primaryActive: string;
   genericAverage: string;
   stress: string;
+  scope3EmissionsPhrase: string;
 }
 
 export interface TranslationSchemaRecommendations {
@@ -262,6 +265,7 @@ export interface TranslationSchemaDigital {
   missionsTitle: string;
   cleanUp: string;
   completed: string;
+  digitalCarbonFootprint: string;
 }
 
 export interface TranslationSchemaCommerce {

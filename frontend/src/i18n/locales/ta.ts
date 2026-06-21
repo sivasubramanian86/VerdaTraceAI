@@ -93,7 +93,9 @@ export const ta: TranslationSchema = {
     virginiaNode: "வடக்கு விர்ஜினியா",
     paretoExplainTitle: "பரேட்டோ சமநிலை விளக்கம்",
     paretoExplainDesc: "நீர் பற்றாக்குறையை அதிகரிக்காமல் கார்பன் வெளியேற்றத்தை குறைக்கும் பிராந்திய மாற்றம் பரேட்டோ உகந்ததாகும்.",
-    optimalZonesTip: "உகந்த பகுதிகள்: ஸ்வீடன் சென்ட்ரல் மற்றும் ஒரிகான் பகுதிகள் 95% குறைந்த குளிரூட்டும் நீரை பயன்படுத்துகின்றன."
+    optimalZonesTip: "உகந்த பகுதிகள்: ஸ்வீடன் சென்ட்ரல் மற்றும் ஒரிகான் பகுதிகள் 95% குறைந்த குளிரூட்டும் நீரை பயன்படுத்துகின்றன.",
+    aiWorkloadCarbonFootprint: "AI workload carbon footprint",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   agentPipeline: {
     title: "ADK மல்டி-ஏஜென்ட் ஆர்கெஸ்ட்ரேஷன் மெஷ்",
@@ -150,7 +152,8 @@ export const ta: TranslationSchema = {
     optimizerNote: "💡 **பசுமை பகுப்பாய்வு**: உள்ளூர் போக்குவரத்து தேர்வுகள், பசுமை கொள்முதல் மற்றும் பகிர்வை ஒருங்கிணைப்பது மாதத்திற்கு **{saved} கிலோ CO₂e** வரை சேமிக்கும், இது உங்கள் ஏஐ பணிகளின் கார்பன் தடத்தை {pct}% ஈடுசெய்யும்.",
     primaryActive: "நேரடி அளவீடு செயலில் உள்ளது",
     genericAverage: "பொது சராசரி அளவீடு",
-    stress: "தட்டுப்பாடு"
+    stress: "தட்டுப்பாடு",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   recommendations: {
     title: "உகந்ததாக்கல் பரிந்துரைகள்",
@@ -257,7 +260,8 @@ export const ta: TranslationSchema = {
     totalCo2: "டிஜிட்டல் கார்பன் தடம்",
     missionsTitle: "டிஜிட்டல் தூய்மை சவால்கள்",
     cleanUp: "சுத்தம் செய்",
-    completed: "முடிந்தது"
+    completed: "முடிந்தது",
+    digitalCarbonFootprint: "digital carbon footprint"
   },
   commerce: {
     title: "உள்ளூர் வர்த்தகம் & கார்பன் கிரெடிட்கள்",

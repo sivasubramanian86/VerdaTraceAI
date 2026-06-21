@@ -18,7 +18,7 @@ const AgentStep: React.FC<AgentStepProps> = ({ name, description, state, icon })
   };
 
   return (
-    <div className="flex flex-col items-center text-center p-4 relative group">
+    <div className="flex flex-col items-center text-center p-4 relative group" role="listitem" aria-label={`${name}: ${description}`}>
       {/* Animated pulsing ring for active agent */}
       <div className={`w-14 h-14 rounded-full border-2 flex items-center justify-center transition-all duration-350 ${stateClasses[state]}`}>
         {state === 'active' && (
@@ -106,7 +106,7 @@ export const AgentPipeline: React.FC<AgentPipelineProps> = ({ locale = 'en' }) =
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 pt-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 pt-4" role="list" aria-label="Agent execution pipeline">
         {steps.map((step, idx) => {
           let state: 'idle' | 'active' | 'done' = 'idle';
           if (idx === activeStep) state = 'active';

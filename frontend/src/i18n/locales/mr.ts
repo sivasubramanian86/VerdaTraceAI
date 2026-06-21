@@ -94,6 +94,8 @@ export const mr: TranslationSchema = {
     paretoExplainTitle: "पॅरेटो समतोल स्पष्टीकरण",
     paretoExplainDesc: "कूलिंग पाण्याचा वापर न वाढवता कार्बन कमी करणे.",
     optimalZonesTip: "स्वीडन आणि ओरेगॉन कमी ताण असलेल्या भागात कार्यरत आहेत.",
+    aiWorkloadCarbonFootprint: "AI workload carbon footprint",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   agentPipeline: {
     title: "ADK मल्टी-एजंट ऑर्केस्ट्रेशन मेश",
@@ -151,6 +153,7 @@ export const mr: TranslationSchema = {
     primaryActive: "प्राथमिक टेलीमेट्री सक्रिय",
     genericAverage: "उद्योगाची सरासरी",
     stress: "ताण",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   recommendations: {
     title: "शिफारसी",
@@ -257,7 +260,8 @@ export const mr: TranslationSchema = {
     totalCo2: "डिजिटल कार्बन फूटप्रिंट",
     missionsTitle: "डिजिटल स्वच्छता मोहिमा",
     cleanUp: "स्वच्छता सुरू करा",
-    completed: "पूर्ण झाले"
+    completed: "पूर्ण झाले",
+    digitalCarbonFootprint: "digital carbon footprint"
   },
   commerce: {
     title: "B2B2C स्थानिक व्यापार आणि कार्बन क्रेडिट्स",

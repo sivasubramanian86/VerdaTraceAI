@@ -65,14 +65,21 @@ class SequentialAgent(BaseAgent):
     async def execute(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
         """Execute sequence in order.
 
+        Catches VerdaTraceException raised by _run and converts it to an error
+        payload dict so callers receive a consistent response contract.
+
         Args:
             inputs: Input configuration dictionary.
             session: Shared session state context.
 
         Returns:
-            Resulting agent dictionary payload.
+            Resulting agent dictionary payload, or an error dict on domain errors.
         """
-        return await self._run(inputs, session)
+        from app.exceptions import VerdaTraceException  # local import avoids circular deps
+        try:
+            return await self._run(inputs, session)
+        except VerdaTraceException as exc:
+            return {"error": exc.message, "error_code": exc.error_code, "status_code": exc.status_code}
 
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
         """Core execution hook for sequential agents.

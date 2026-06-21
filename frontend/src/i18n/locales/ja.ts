@@ -97,6 +97,8 @@ export const ja: TranslationSchema = {
     paretoExplainTitle: "パレート均衡の説明",
     paretoExplainDesc: "電網の炭素集約度を最小化しながら冷却水消費を大幅に増加させない地域移行がパレート最適です。",
     optimalZonesTip: "スウェーデン中部とオレゴンは低ストレス流域で95%以上のカーボンフリー電力を使用しており、移行の最適候補地です。",
+    aiWorkloadCarbonFootprint: "AI workload carbon footprint",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   agentPipeline: {
     title: "ADKマルチエージェント協調オーケストレーションメッシュ",
@@ -154,6 +156,7 @@ export const ja: TranslationSchema = {
     primaryActive: "メインテレメトリ有効",
     genericAverage: "業界標準平均値",
     stress: "ストレス",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   recommendations: {
     title: "推奨事項",
@@ -260,7 +263,8 @@ export const ja: TranslationSchema = {
     totalCo2: "デジタル炭素排出量",
     missionsTitle: "デジタルクリーンアップクエスト",
     cleanUp: "クリーンアップ開始",
-    completed: "完了"
+    completed: "完了",
+    digitalCarbonFootprint: "digital carbon footprint"
   },
   commerce: {
     title: "地域商業 & カーボンクレジット",

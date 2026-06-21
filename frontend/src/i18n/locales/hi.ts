@@ -93,7 +93,9 @@ export const hi: TranslationSchema = {
     virginiaNode: "उत्तरी वर्जीनिया",
     paretoExplainTitle: "परेटो संतुलन की व्याख्या",
     paretoExplainDesc: "जल संकट को बढ़ाए बिना कार्बन उत्सर्जन को कम करने वाला क्षेत्र स्थानांतरण परेटो अनुकूलतम है.",
-    optimalZonesTip: "स्वीडन सेंट्रल और ओरेगन क्षेत्र कम जल तनाव वाले नदी घाटियों में कार्य करते हैं."
+    optimalZonesTip: "स्वीडन सेंट्रल और ओरेगन क्षेत्र कम जल तनाव वाले नदी घाटियों में कार्य करते हैं.",
+    aiWorkloadCarbonFootprint: "AI workload carbon footprint",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   agentPipeline: {
     title: "ADK मल्टी-एजेंट ऑर्केस्ट्रेशन मेश",
@@ -150,7 +152,8 @@ export const hi: TranslationSchema = {
     optimizerNote: "💡 **अनुकूलक विश्लेषण**: स्थानीय पारगमन विकल्प, हरित खरीदारी और पड़ोस साझाकरण को एकीकृत करने से प्रति माह **{saved} किलोग्राम CO₂e** तक की बचत होती है, जो आपके एआई वर्कलोड के कार्बन फुटप्रिंट का {pct}% हिस्सा ऑफसेट करती है।",
     primaryActive: "प्राथमिक टेलीमेट्री सक्रिय",
     genericAverage: "सामान्य उद्योग औसत",
-    stress: "तनाव"
+    stress: "तनाव",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   recommendations: {
     title: "अनुकूलन फ़ीड",
@@ -257,7 +260,8 @@ export const hi: TranslationSchema = {
     totalCo2: "डिजिटल कार्बन उत्सर्जन",
     missionsTitle: "डिजिटल सफाई मिशन",
     cleanUp: "सफाई शुरू करें",
-    completed: "पूर्ण"
+    completed: "पूर्ण",
+    digitalCarbonFootprint: "digital carbon footprint"
   },
   commerce: {
     title: "स्थानीय वाणिज्य और कार्बन क्रेडिट",

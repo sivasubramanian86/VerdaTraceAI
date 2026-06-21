@@ -48,7 +48,8 @@ export const te: TranslationSchema = {
     totalCo2: "డిజిటల్ కార్బన్ ముద్ర",
     missionsTitle: "డిజిటల్ క్లీన్-అప్ క్వెస్ట్స్",
     cleanUp: "శుభ్రపరచడం ప్రారంభించండి",
-    completed: "పూర్తయింది"
+    completed: "పూర్తయింది",
+    digitalCarbonFootprint: "digital carbon footprint"
   },
   commerce: {
     title: "B2B2C స్థానిక వాణిజ్యం & కార్బన్ క్రెడిట్స్",

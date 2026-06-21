@@ -97,6 +97,8 @@ export const es: TranslationSchema = {
     paretoExplainTitle: "Explicación del Equilibrio de Pareto",
     paretoExplainDesc: "La migración de una región es Pareto óptima si minimiza la intensidad de carbono de la red sin aumentar desproporcionadamente el consumo de agua de refrigeración del centro de datos en cuencas áridas.",
     optimalZonesTip: "Suecia Central y Oregón operan en cuencas de bajo estrés mientras utilizan más del 95% de redes libres de carbono.",
+    aiWorkloadCarbonFootprint: "AI workload carbon footprint",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   agentPipeline: {
     title: "Malla de Orquestación Multiagente ADK",
@@ -154,6 +156,7 @@ export const es: TranslationSchema = {
     primaryActive: "Telemetría Primaria Activa",
     genericAverage: "Promedio Genérico de la Industria",
     stress: "Estrés",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   recommendations: {
     title: "Canal de Optimización",
@@ -260,7 +263,8 @@ export const es: TranslationSchema = {
     totalCo2: "Huella de Carbono Digital",
     missionsTitle: "Misiones de Limpieza Digital",
     cleanUp: "Iniciar Limpieza",
-    completed: "Completado"
+    completed: "Completado",
+    digitalCarbonFootprint: "digital carbon footprint"
   },
   commerce: {
     title: "Comercio Local B2B2C y Créditos de Carbono",

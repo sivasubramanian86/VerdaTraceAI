@@ -93,7 +93,9 @@ export const en: TranslationSchema = {
     virginiaNode: "N. Virginia",
     paretoExplainTitle: "Pareto Equilibrium Explanation",
     paretoExplainDesc: "A region migration is Pareto optimal if it minimizes grid carbon intensity without disproportionately increasing datacenter cooling water consumption in arid basins.",
-    optimalZonesTip: "Sweden Central and Oregon operate in low-stress river basins while utilizing >95% carbon-free grids."
+    optimalZonesTip: "Sweden Central and Oregon operate in low-stress river basins while utilizing >95% carbon-free grids.",
+    aiWorkloadCarbonFootprint: "AI workload carbon footprint",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   agentPipeline: {
     title: "ADK Multi-Agent Orchestration Mesh",
@@ -150,7 +152,8 @@ export const en: TranslationSchema = {
     optimizerNote: "💡 **Optimizer Analysis**: Integrating local transport choices, green shopping, and neighborhood sharing saves up to **{saved} kg CO₂e** per month, offsetting {pct}% of your AI workloads' carbon footprint.",
     primaryActive: "Primary Telemetry Active",
     genericAverage: "Generic Industry Average",
-    stress: "Stress"
+    stress: "Stress",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   recommendations: {
     title: "Optimization Feed",
@@ -257,7 +260,8 @@ export const en: TranslationSchema = {
     totalCo2: "Digital Carbon Footprint",
     missionsTitle: "Digital Spring-Clean Quests",
     cleanUp: "Start Clean-up",
-    completed: "Completed"
+    completed: "Completed",
+    digitalCarbonFootprint: "digital carbon footprint"
   },
   commerce: {
     title: "B2B2C Local Commerce & Carbon Credits",

@@ -70,8 +70,16 @@ jobs:
         run: |
           python -m pytest tests/ -v \
             --cov=app \
+            --cov-report=xml \
             --cov-report=term-missing \
-            --cov-fail-under=60
+            --cov-fail-under=90
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: backend/coverage.xml
+          retention-days: 14
 
       - name: npm audit (backend node deps)
         run: |
@@ -82,7 +90,7 @@ jobs:
   # Frontend Quality Gates
   # ─────────────────────────────────────────
   frontend:
-    name: Frontend — TypeScript Build / Lint
+    name: Frontend — TypeScript Build / Tests / Lint
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -101,8 +109,26 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Vitest — unit + accessibility tests
+        run: npm test
+
+      - name: Vitest — coverage report
+        run: npm run test:coverage
+
+      - name: Upload frontend coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: frontend/coverage/
+          retention-days: 14
+
       - name: TypeScript build (type-check gate)
         run: npm run build
+
+      - name: Secret scan — frontend source
+        run: |
+          if grep -rE "(AKIA|sk-|AIza)[A-Za-z0-9]{16,}" frontend/src/; then exit 1; fi
+        working-directory: ${{ github.workspace }}
 
       - name: npm audit
         run: npm audit --audit-level moderate
@@ -114,6 +140,7 @@ jobs:
   ci-success:
     name: CI Passed
     needs: [secret-scan, backend, frontend]
+
     runs-on: ubuntu-latest
     if: always()
     steps:

@@ -48,7 +48,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ emissionsData, loa
             {t.title}
           </h2>
           <p className="text-slate-400 mt-2">
-            {t.subtitle}
+            {t.subtitle} {t.aiWorkloadCarbonFootprint}.
+          </p>
+          <p className="text-slate-400 mt-1 text-sm">
+            {t.scope3EmissionsPhrase}
           </p>
         </div>
         <div className="flex gap-2">
@@ -141,7 +144,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ emissionsData, loa
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-md font-bold text-slate-200 flex items-center gap-1.5">
-                  <ShieldCheck className="w-5 h-5 text-emerald-400" /> {t.uncertaintyTitle}
+                  <ShieldCheck className="w-5 h-5 text-emerald-400" aria-hidden="true" /> {t.uncertaintyTitle}
                 </h3>
                 <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
                   uncertainty < 10 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 
@@ -156,7 +159,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ emissionsData, loa
               </p>
               
               <div className="mt-6 flex items-center justify-center relative">
-                <svg viewBox="0 0 100 50" className="w-32 h-16 text-slate-700">
+                <svg viewBox="0 0 100 50" className="w-32 h-16 text-slate-700" role="img" aria-label={`Uncertainty margin gauge showing plus minus ${uncertainty}%`}>
                   <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="currentColor" strokeWidth="12" />
                   <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke={uncertainty < 10 ? '#34d399' : '#f59e0b'} strokeWidth="12" strokeDasharray={`${Math.max(0, 100 - (uncertainty * 3))} 200`} />
                 </svg>
@@ -167,7 +170,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ emissionsData, loa
               </div>
             </div>
             <div className="text-[10px] text-slate-500 bg-slate-900/60 p-2.5 rounded-lg mt-4 border border-slate-800/50 flex items-start gap-1.5">
-              <HelpCircle className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
+              <HelpCircle className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" aria-hidden="true" />
               <span>{t.uncertaintyTip}</span>
             </div>
           </div>
@@ -177,7 +180,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ emissionsData, loa
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-md font-bold text-slate-200 flex items-center gap-1.5">
-                  <AlertTriangle className="w-5 h-5 text-orange-400 animate-pulse" /> {t.waterStressTitle}
+                  <AlertTriangle className="w-5 h-5 text-orange-400 animate-pulse" aria-hidden="true" /> {t.waterStressTitle}
                 </h3>
                 <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
                   waterStress === 'Low' ? 'bg-emerald-500/10 text-emerald-400' : 
@@ -211,7 +214,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ emissionsData, loa
           <div className="glass-panel p-6 bg-gradient-to-br from-slate-900/60 to-emerald-950/20 border-emerald-500/20 flex flex-col justify-between">
             <div>
               <h3 className="text-md font-bold text-emerald-450 flex items-center gap-1.5 mb-2">
-                <Leaf className="w-5 h-5" /> {t.aiEquivalentsTitle}
+                <Leaf className="w-5 h-5" aria-hidden="true" /> {t.aiEquivalentsTitle}
               </h3>
               <p className="text-xs text-slate-400 leading-normal mb-4">
                 {t.aiEquivalentsDesc.replace("{co2}", String(co2))}
@@ -220,7 +223,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ emissionsData, loa
               <div className="space-y-3">
                 <div className="flex items-center gap-3 p-2.5 bg-slate-950/50 rounded-xl border border-slate-850 hover:border-emerald-500/25 transition-colors">
                   <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                    <Car className="w-4 h-4" />
+                    <Car className="w-4 h-4" aria-hidden="true" />
                   </div>
                   <div>
                     <span className="block text-[10px] text-slate-500 uppercase">{t.carDistance}</span>
@@ -230,7 +233,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ emissionsData, loa
 
                 <div className="flex items-center gap-3 p-2.5 bg-slate-950/50 rounded-xl border border-slate-850 hover:border-emerald-500/25 transition-colors">
                   <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400">
-                    <Utensils className="w-4 h-4" />
+                    <Utensils className="w-4 h-4" aria-hidden="true" />
                   </div>
                   <div>
                     <span className="block text-[10px] text-slate-500 uppercase">{t.dietFootprint}</span>
@@ -240,7 +243,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ emissionsData, loa
 
                 <div className="flex items-center gap-3 p-2.5 bg-slate-950/50 rounded-xl border border-slate-850 hover:border-emerald-500/25 transition-colors">
                   <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-400">
-                    <Flame className="w-4 h-4" />
+                    <Flame className="w-4 h-4" aria-hidden="true" />
                   </div>
                   <div>
                     <span className="block text-[10px] text-slate-500 uppercase">{t.utilities}</span>
@@ -268,17 +271,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ emissionsData, loa
             <button 
               onClick={() => setActiveSubTab('trends')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${activeSubTab === 'trends' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'text-slate-400 hover:text-slate-200'}`}>
-              <TrendingUp className="w-3.5 h-3.5" /> {t.tabTrends}
+              <TrendingUp className="w-3.5 h-3.5" aria-hidden="true" /> {t.tabTrends}
             </button>
             <button 
               onClick={() => setActiveSubTab('ledger')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${activeSubTab === 'ledger' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'text-slate-400 hover:text-slate-200'}`}>
-              <FileText className="w-3.5 h-3.5" /> {t.tabLedger}
+              <FileText className="w-3.5 h-3.5" aria-hidden="true" /> {t.tabLedger}
             </button>
             <button 
               onClick={() => setActiveSubTab('pareto')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${activeSubTab === 'pareto' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'text-slate-400 hover:text-slate-200'}`}>
-              <Droplet className="w-3.5 h-3.5" /> {t.tabPareto}
+              <Droplet className="w-3.5 h-3.5" aria-hidden="true" /> {t.tabPareto}
             </button>
           </div>
         </div>
@@ -287,7 +290,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ emissionsData, loa
           <div className="space-y-4 animate-fadeIn">
             <h4 className="text-sm font-semibold text-slate-450 uppercase tracking-wider">{t.trendChartTitle}</h4>
             <div className="w-full h-64">
-              <svg viewBox="0 0 500 200" className="w-full h-full text-emerald-500">
+              <svg viewBox="0 0 500 200" className="w-full h-full text-emerald-500" role="img" aria-label="Line chart showing carbon emissions trend over the last 4 weeks with a downward trajectory">
                 <defs>
                   <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
@@ -343,7 +346,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ emissionsData, loa
                       <td className="py-3 font-mono text-emerald-455">{block.hash}</td>
                       <td className="py-3 text-right">
                         <span className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] rounded font-bold uppercase tracking-wider inline-flex items-center gap-1">
-                          <CheckCircle2 className="w-3.5 h-3.5" /> {t.verifiedBadge}
+                          <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" /> {t.verifiedBadge}
                         </span>
                       </td>
                     </tr>
@@ -366,7 +369,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ emissionsData, loa
                 <span className="absolute right-4 bottom-2 text-[9px] text-slate-500 uppercase tracking-wider">{t.xAxisLabel}</span>
                 
                 {/* Visual Pareto SVG Grid */}
-                <svg viewBox="0 0 400 200" className="w-full h-full text-slate-750">
+                <svg viewBox="0 0 400 200" className="w-full h-full text-slate-750" role="img" aria-label="Scatter plot showing Carbon-Water tradeoff optimal zones across different cloud regions like Sweden, Oregon, Iowa, and Virginia">
                   {/* Grid Lines */}
                   <line x1="40" y1="20" x2="40" y2="160" stroke="#334155" strokeWidth="1" />
                   <line x1="40" y1="160" x2="380" y2="160" stroke="#334155" strokeWidth="1" />

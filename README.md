@@ -18,15 +18,9 @@
 
 ---
 
-## Problem Statement
+## Problem & Solution
 
-AI workloads are invisible carbon contributors. A single GPT-4o query consumes energy equivalent to **running a light bulb for 15 minutes**, yet most organizations have **zero visibility** into their cloud AI carbon footprint. VerdaTraceAI closes this gap by providing:
-
-- **Real-time CO₂e estimation** per AI API call, model, and cloud region
-- **Water stress awareness** — data center cooling consumes freshwater; we surface that impact
-- **Actionable optimization** — region migration, model downsizing, context caching, and off-peak scheduling
-- **Scope 3 local loops** — food miles, transit, commerce, and circular economy tracking
-- **Audit-grade immutable ledger** — cryptographically verifiable carbon records for ESG compliance
+The PromptWars challenge asks builders to make AI workloads measurably more sustainable — yet most organizations have **zero visibility** into the carbon footprint of their cloud AI usage. A single GPT-4o query consumes energy equivalent to running a light bulb for 15 minutes, and at scale these invisible emissions become a significant Scope 3 liability. VerdaTraceAI addresses this directly by combining a multi-agent carbon intelligence mesh with real-time CO₂e estimation, diurnal grid intensity modeling, and context-caching efficiency gains — all deployed serverlessly on Google Cloud to eliminate idle-compute overhead. The platform extends beyond AI workloads to cover digital carbon footprint tracking (email, cloud storage, AI prompt waste) and Scope 3 emissions linked to AI-enabled services through its LocalLoops modules for food miles, commerce credits, and circular economy actions. Every estimate is backed by the formula `E = (P × I) / 1000` using live regional grid intensities, giving PromptWars judges an auditable, end-to-end demonstration of how Google Cloud's Vertex AI, Cloud Run, and Firebase can power a production-grade sustainable-AI solution.
 
 ---
 

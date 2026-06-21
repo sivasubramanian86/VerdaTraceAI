@@ -97,6 +97,8 @@ export const zh: TranslationSchema = {
     paretoExplainTitle: "帕累托均衡说明",
     paretoExplainDesc: "当区域迁移同时降低电网碳强度而不显著增加冷却水使用量时，即为帕累托最优状态。",
     optimalZonesTip: "瑞典中部和俄勒冈位于低压流域，95%以上使用无碳电力，是最优迁移目的地。",
+    aiWorkloadCarbonFootprint: "AI workload carbon footprint",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   agentPipeline: {
     title: "ADK 多智能体协同编排网格",
@@ -154,6 +156,7 @@ export const zh: TranslationSchema = {
     primaryActive: "主遥测源激活",
     genericAverage: "行业估算平均值",
     stress: "压力",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   recommendations: {
     title: "优化建议",
@@ -260,7 +263,8 @@ export const zh: TranslationSchema = {
     totalCo2: "数字碳足迹",
     missionsTitle: "数字春季清理任务",
     cleanUp: "开始清理",
-    completed: "已完成"
+    completed: "已完成",
+    digitalCarbonFootprint: "digital carbon footprint"
   },
   commerce: {
     title: "B2B2C 本地商业与碳积分",

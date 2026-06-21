@@ -94,6 +94,8 @@ export const ml: TranslationSchema = {
     paretoExplainTitle: "പാരെറ്റോ സമതുലിതാ വിവരണം",
     paretoExplainDesc: "തണുപ്പിക്കൽ ജല ഉപഭോഗം വർദ്ധിപ്പിക്കാതെ കാർബൺ കുറയ്ക്കുക.",
     optimalZonesTip: "സ്വീഡനും ഒറിഗോണും കുറഞ്ഞ സമ്മർദ്ദ മേഖലകളിലാണ് പ്രവർത്തിക്കുന്നത്.",
+    aiWorkloadCarbonFootprint: "AI workload carbon footprint",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   agentPipeline: {
     title: "ADK മൾട്ടി-ഏജന്റ് ഓർക്കസ്ട്രേഷൻ മെഷ്",
@@ -151,6 +153,7 @@ export const ml: TranslationSchema = {
     primaryActive: "പ്രൈമറി ടെലിമെട്രി സജീവം",
     genericAverage: "വ്യവസായ ശരാശരി",
     stress: "സമ്മർദ്ദം",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   recommendations: {
     title: "ശുപാർശകൾ",
@@ -257,7 +260,8 @@ export const ml: TranslationSchema = {
     totalCo2: "ഡിജിറ്റൽ കാർബൺ കാൽപ്പാട്",
     missionsTitle: "ഡിജിറ്റൽ ശുചീകരണ ദൗത്യങ്ങൾ",
     cleanUp: "ശുചീകരണം ആരംഭിക്കുക",
-    completed: "പൂർത്തിയായി"
+    completed: "പൂർത്തിയായി",
+    digitalCarbonFootprint: "digital carbon footprint"
   },
   commerce: {
     title: "പ്രാദേശിക വാണിജ്യവും കാർബൺ ക്രോഡിറ്റും",

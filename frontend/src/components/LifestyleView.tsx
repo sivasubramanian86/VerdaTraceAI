@@ -126,15 +126,17 @@ export const LifestyleView: React.FC<LifestyleViewProps> = ({ aiWorkloadCo2Yr = 
               <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5"><Car className="w-4 h-4" /> {t.travelHeader}</h4>
               <div>
                 <label className="block text-xs text-slate-500 mb-2">{t.annualDist}: {drivingKm.toLocaleString()} km</label>
-                <input 
+                <input
                   type="range" min="0" max="40000" step="1000"
+                  aria-label={t.annualDist}
                   value={drivingKm} onChange={(e) => setDrivingKm(Number(e.target.value))}
-                  className="w-full accent-emerald-500 bg-slate-700 rounded-lg appearance-none h-1.5" 
+                  className="w-full accent-emerald-500 bg-slate-700 rounded-lg appearance-none h-1.5"
                 />
               </div>
               <div>
                 <label className="block text-xs text-slate-500 mb-2">{t.primaryFuel}</label>
-                <select 
+                <select
+                  aria-label={t.primaryFuel}
                   value={vehicleType} onChange={(e) => setVehicleType(e.target.value)}
                   className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200">
                   <option value="gas">{t.optionGasCar}</option>
@@ -149,7 +151,8 @@ export const LifestyleView: React.FC<LifestyleViewProps> = ({ aiWorkloadCo2Yr = 
               <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5"><Leaf className="w-4 h-4 text-emerald-400" /> {t.foodHeader}</h4>
               <div>
                 <label className="block text-xs text-slate-500 mb-2">{t.primaryDiet}</label>
-                <select 
+                <select
+                  aria-label={t.primaryDiet}
                   value={dietType} onChange={(e) => setDietType(e.target.value)}
                   className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200">
                   <option value="meat-heavy">{t.optionHeavyMeat}</option>
@@ -165,15 +168,17 @@ export const LifestyleView: React.FC<LifestyleViewProps> = ({ aiWorkloadCo2Yr = 
               <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5"><Flame className="w-4 h-4 text-orange-400" /> {t.energyHeader}</h4>
               <div>
                 <label className="block text-xs text-slate-500 mb-2">{t.yearlyElectricity}: {electricityKwh.toLocaleString()} kWh</label>
-                <input 
+                <input
                   type="range" min="500" max="15000" step="500"
+                  aria-label={t.yearlyElectricity}
                   value={electricityKwh} onChange={(e) => setElectricityKwh(Number(e.target.value))}
-                  className="w-full accent-emerald-500 bg-slate-700 rounded-lg appearance-none h-1.5" 
+                  className="w-full accent-emerald-500 bg-slate-700 rounded-lg appearance-none h-1.5"
                 />
               </div>
               <div>
                 <label className="block text-xs text-slate-500 mb-2">{t.heatingUtility}</label>
-                <select 
+                <select
+                  aria-label={t.heatingUtility}
                   value={heatingSource} onChange={(e) => setHeatingSource(e.target.value)}
                   className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200">
                   <option value="gas">{t.optionGasBoiler}</option>
@@ -188,7 +193,8 @@ export const LifestyleView: React.FC<LifestyleViewProps> = ({ aiWorkloadCo2Yr = 
               <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5"><ShoppingBag className="w-4 h-4 text-violet-400" /> {t.mindfulConsumption}</h4>
               <div>
                 <label className="block text-xs text-slate-500 mb-2">{t.shoppingProfile}</label>
-                <select 
+                <select
+                  aria-label={t.shoppingProfile}
                   value={shoppingLevel} onChange={(e) => setShoppingLevel(e.target.value)}
                   className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200">
                   <option value="low">{t.optionLowShop}</option>
@@ -198,7 +204,9 @@ export const LifestyleView: React.FC<LifestyleViewProps> = ({ aiWorkloadCo2Yr = 
               </div>
               <div className="flex items-center justify-between pt-2">
                 <span className="text-xs text-slate-400">{t.recycleLabel}</span>
-                <button 
+                <button
+                  aria-label={`Toggle recycling: currently ${recycling ? 'on' : 'off'}`}
+                  aria-pressed={recycling}
                   onClick={() => setRecycling(!recycling)}
                   className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${recycling ? 'bg-emerald-500' : 'bg-slate-700'}`}>
                   <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${recycling ? 'translate-x-4.5' : 'translate-x-1'}`} />
@@ -216,16 +224,21 @@ export const LifestyleView: React.FC<LifestyleViewProps> = ({ aiWorkloadCo2Yr = 
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
               {/* Pledge 1 */}
-              <button 
+              <button
+                aria-label={t.pledgeEvTitle}
+                aria-pressed={pledgeSwitchEv}
                 onClick={() => setPledgeSwitchEv(!pledgeSwitchEv)}
                 disabled={vehicleType !== 'gas'}
                 className={`flex items-start text-left p-4 rounded-xl border transition-all ${
-                  pledgeSwitchEv 
-                    ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-100' 
+                  pledgeSwitchEv
+                    ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-100'
                     : 'bg-slate-900/50 border-slate-800 text-slate-400 hover:border-slate-750'
                 } ${vehicleType !== 'gas' ? 'opacity-40 cursor-not-allowed' : ''}`}>
-                <div className="mr-3 mt-1">
-                  <input type="checkbox" checked={pledgeSwitchEv} disabled={vehicleType !== 'gas'} readOnly className="rounded border-slate-700 text-emerald-500 focus:ring-emerald-500" />
+                <div className="mr-3 mt-1" aria-hidden="true">
+                  {/* Decorative checkbox indicator — interaction handled by parent button */}
+                  <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${pledgeSwitchEv ? 'bg-emerald-500 border-emerald-500' : 'border-slate-600'}`}>
+                    {pledgeSwitchEv && <span className="text-slate-900 text-[10px] font-black">✓</span>}
+                  </div>
                 </div>
                 <div>
                   <span className="block font-bold text-sm text-slate-200">{t.pledgeEvTitle}</span>
@@ -234,15 +247,19 @@ export const LifestyleView: React.FC<LifestyleViewProps> = ({ aiWorkloadCo2Yr = 
               </button>
 
               {/* Pledge 2 */}
-              <button 
+              <button
+                aria-label={t.pledgeSolarTitle}
+                aria-pressed={pledgeSolarPanels}
                 onClick={() => setPledgeSolarPanels(!pledgeSolarPanels)}
                 className={`flex items-start text-left p-4 rounded-xl border transition-all ${
-                  pledgeSolarPanels 
-                    ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-100' 
+                  pledgeSolarPanels
+                    ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-100'
                     : 'bg-slate-900/50 border-slate-800 text-slate-400 hover:border-slate-750'
                 }`}>
-                <div className="mr-3 mt-1">
-                  <input type="checkbox" checked={pledgeSolarPanels} readOnly className="rounded border-slate-700 text-emerald-500 focus:ring-emerald-500" />
+                <div className="mr-3 mt-1" aria-hidden="true">
+                  <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${pledgeSolarPanels ? 'bg-emerald-500 border-emerald-500' : 'border-slate-600'}`}>
+                    {pledgeSolarPanels && <span className="text-slate-900 text-[10px] font-black">✓</span>}
+                  </div>
                 </div>
                 <div>
                   <span className="block font-bold text-sm text-slate-200">{t.pledgeSolarTitle}</span>
@@ -274,15 +291,19 @@ export const LifestyleView: React.FC<LifestyleViewProps> = ({ aiWorkloadCo2Yr = 
               </div>
 
               {/* Pledge 4 */}
-              <button 
+              <button
+                aria-label={t.pledgeWasteTitle}
+                aria-pressed={pledgeLowWaste}
                 onClick={() => setPledgeLowWaste(!pledgeLowWaste)}
                 className={`flex items-start text-left p-4 rounded-xl border transition-all ${
-                  pledgeLowWaste 
-                    ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-100' 
+                  pledgeLowWaste
+                    ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-100'
                     : 'bg-slate-900/50 border-slate-800 text-slate-400 hover:border-slate-750'
                 }`}>
-                <div className="mr-3 mt-1">
-                  <input type="checkbox" checked={pledgeLowWaste} readOnly className="rounded border-slate-700 text-emerald-500 focus:ring-emerald-500" />
+                <div className="mr-3 mt-1" aria-hidden="true">
+                  <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${pledgeLowWaste ? 'bg-emerald-500 border-emerald-500' : 'border-slate-600'}`}>
+                    {pledgeLowWaste && <span className="text-slate-900 text-[10px] font-black">✓</span>}
+                  </div>
                 </div>
                 <div>
                   <span className="block font-bold text-sm text-slate-200">{t.pledgeWasteTitle}</span>

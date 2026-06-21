@@ -29,6 +29,10 @@ function App() {
       document.body.classList.add('light-mode');
     }
   }, [isDark]);
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
   
   // Dashboard State
   const [emissionsData, setEmissionsData] = useState<any>(null);

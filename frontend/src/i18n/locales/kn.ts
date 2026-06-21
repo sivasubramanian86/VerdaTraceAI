@@ -93,7 +93,9 @@ export const kn: TranslationSchema = {
     virginiaNode: "ಉತ್ತರ ವರ್ಜಿನಿಯಾ",
     paretoExplainTitle: "ಪರೇಟೋ ಸಮತೋಲನದ ವಿವರಣೆ",
     paretoExplainDesc: "ನೀರಿನ ಕೊರತೆಯನ್ನು ಅತಿಯಾಗಿ ಹೆಚ್ಚಿಸದೆ ಗ್ರೀಡ್ ಹೊರಸೂಸುವಿಕೆಯನ್ನು ಕಡಿಮೆ ಮಾಡುವ ಪ್ರದೇಶ ವರ್ಗಾವಣೆ ಪರೇಟೋ ಸೂಕ್ತವಾಗಿದೆ.",
-    optimalZonesTip: "ಸ್ವೀಡನ್ ಸೆನ್ಟ್ರಲ್ ಮತ್ತು ಒರೆಗಾನ್ ಪ್ರದೇಶಗಳು ಕಡಿಮೆ ನೀರಿನ ಕೊರತೆಯುಳ್ಳ ನದಿ ಜಲಾನಯನ ಪ್ರದೇಶಗಳಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತವೆ."
+    optimalZonesTip: "ಸ್ವೀಡನ್ ಸೆನ್ಟ್ರಲ್ ಮತ್ತು ಒರೆಗಾನ್ ಪ್ರದೇಶಗಳು ಕಡಿಮೆ ನೀರಿನ ಕೊರತೆಯುಳ್ಳ ನದಿ ಜಲಾನಯನ ಪ್ರದೇಶಗಳಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತವೆ.",
+    aiWorkloadCarbonFootprint: "AI workload carbon footprint",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   agentPipeline: {
     title: "ADK ಮಲ್ಟಿ-ಏಜೆಂಟ್ ಆರ್ಕೆಸ್ಟ್ರೇಶನ್ ಮೆಶ್",
@@ -150,7 +152,8 @@ export const kn: TranslationSchema = {
     optimizerNote: "💡 **ವಿಶ್ಲೇಷಕ ವರದಿ**: ಸ್ಥಳೀಯ ಸಾರಿಗೆ ಆಯ್ಕೆಗಳು, ಹಸಿರು ಖರೀದಿ ಮತ್ತು ನೆರೆಹೊರೆಯ ಹಂಚಿಕೆಯನ್ನು ಸಂಯೋಜಿಸುವುದರಿಂದ ತಿಂಗಳಿಗೆ **{saved} ಕೆಜಿ CO₂e** ವರೆಗೆ ಉಳಿಸಬಹುದು, ಇದು ನಿಮ್ಮ ಎಐ ವರ್ಕ್‌ಲೋಡ್‌ನ ಇಂಗಾಲದ ಹೆಜ್ಜೆಗುರುತನ್ನು {pct}% ನಷ್ಟು ಸರಿದೂಗಿಸುತ್ತದೆ.",
     primaryActive: "ಪ್ರಾಥಮಿಕ ಟೆಲಿಮೆಟ್ರಿ ಸಕ್ರಿಯ",
     genericAverage: "ಸಾಮಾನ್ಯ ಉದ್ಯಮ ಸರಾಸರಿ",
-    stress: "ಒತ್ತಡ"
+    stress: "ಒತ್ತಡ",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   recommendations: {
     title: "ಆಪ್ಟಿಮೈಸೇಶನ್ ಫೀಡ್",
@@ -257,7 +260,8 @@ export const kn: TranslationSchema = {
     totalCo2: "ಡಿಜಿಟಲ್ ಇಂಗಾಲದ ಹೆಜ್ಜೆಗುರುತು",
     missionsTitle: "ಡಿಜಿಟಲ್ ಶುಚೀಕರಣ ಸವಾಲುಗಳು",
     cleanUp: "ಶುಚಿಗೊಳಿಸು",
-    completed: "ಪೂರ್ಣಗೊಂಡಿದೆ"
+    completed: "ಪೂರ್ಣಗೊಂಡಿದೆ",
+    digitalCarbonFootprint: "digital carbon footprint"
   },
   commerce: {
     title: "ಸ್ಥಳೀಯ ವಾಣಿಜ್ಯ ಮತ್ತು ಕಾರ್ಬನ್ ಕ್ರೆಡಿಟ್‌ಗಳು",

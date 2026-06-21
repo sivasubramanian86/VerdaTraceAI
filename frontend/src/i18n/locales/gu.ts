@@ -94,6 +94,8 @@ export const gu: TranslationSchema = {
     paretoExplainTitle: "પેરેટો સંતુલન સમજૂતી",
     paretoExplainDesc: "કૂલિંગ પાણીનો વપરાશ વધાર્યા વિના કાર્બન ઘટાડવો.",
     optimalZonesTip: "સ્વીડન અને ઓરેગોન ઓછા તણાવવાળા વિસ્તારમાં કાર્યરત છે.",
+    aiWorkloadCarbonFootprint: "AI workload carbon footprint",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   agentPipeline: {
     title: "ADK મલ્ટી-એજન્ટ ઓર્કેસ્ટ્રેશન મેશ",
@@ -151,6 +153,7 @@ export const gu: TranslationSchema = {
     primaryActive: "પ્રાથમિક ટેલિમેટ્રી સક્રિય",
     genericAverage: "ઉદ્યોગ સરેરાશ",
     stress: "તણાવ",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   recommendations: {
     title: "ભલામણો",
@@ -257,7 +260,8 @@ export const gu: TranslationSchema = {
     totalCo2: "ડિજિટલ કાર્બન ફૂટપ્રિન્ટ",
     missionsTitle: "ડિજિટલ સફાઈ ક્વેસ્ટ્સ",
     cleanUp: "સફાઈ શરૂ કરો",
-    completed: "પૂર્ણ થયું"
+    completed: "પૂર્ણ થયું",
+    digitalCarbonFootprint: "digital carbon footprint"
   },
   commerce: {
     title: "B2B2C સ્થાનિક વેપાર અને કાર્બન ક્રેડિટ્સ",

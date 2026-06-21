@@ -97,6 +97,8 @@ export const fr: TranslationSchema = {
     paretoExplainTitle: "Explication de l'Équilibre de Pareto",
     paretoExplainDesc: "La migration régionale est Pareto-optimale si elle minimise l'intensité carbone sans augmenter de manière disproportionnée la consommation d'eau de refroidissement.",
     optimalZonesTip: "La Suède centrale et l'Oregon opèrent dans des bassins à faible stress tout en utilisant des réseaux décarbonés.",
+    aiWorkloadCarbonFootprint: "AI workload carbon footprint",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   agentPipeline: {
     title: "Réseau d'Orchestration Multi-Agents ADK",
@@ -154,6 +156,7 @@ export const fr: TranslationSchema = {
     primaryActive: "Télémétrie Primaire Active",
     genericAverage: "Moyenne Générique de l'Industrie",
     stress: "Stress",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   recommendations: {
     title: "Flux d'Optimisation",
@@ -260,7 +263,8 @@ export const fr: TranslationSchema = {
     totalCo2: "Empreinte Carbone Numérique",
     missionsTitle: "Missions de Nettoyage Digital",
     cleanUp: "Démarrer le Nettoyage",
-    completed: "Complété"
+    completed: "Complété",
+    digitalCarbonFootprint: "digital carbon footprint"
   },
   commerce: {
     title: "Commerce Local B2B2C & Crédits Carbone",

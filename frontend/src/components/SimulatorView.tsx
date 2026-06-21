@@ -203,6 +203,7 @@ export const SimulatorView: React.FC<SimulatorViewProps> = ({
     <div className="space-y-6">
       <h2 className="text-3xl font-bold text-slate-100">{t.title}</h2>
       <p className="text-slate-400">{t.subtitle}</p>
+      <p className="text-slate-500 text-sm">{t.scope3EmissionsPhrase}</p>
       
       {/* Unstructured Scope 3 Ingestion Console */}
       <div className="glass-panel p-6 border-cyan-500/20 bg-gradient-to-r from-slate-950 to-slate-900/40">

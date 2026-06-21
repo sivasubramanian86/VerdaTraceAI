@@ -14,22 +14,22 @@ router = APIRouter()
 
 class ProjectCreateRequest(BaseModel):
     """Request payload schema for creating a project."""
-    name: str = Field(..., description="Project name")
-    provider: str = Field("gcp", description="Cloud provider")
-    region: str = Field("us-central1", description="Cloud region")
-    model_family: str = Field("gemini-2.5-flash", description="Model family")
-    hardware: str = Field("GPU", description="Execution hardware")
+    name: str = Field(..., min_length=1, max_length=100, description="Project name")
+    provider: str = Field("gcp", pattern="^(gcp|aws|azure|onprem)$", description="Cloud provider")
+    region: str = Field("us-central1", min_length=2, max_length=30, description="Cloud region")
+    model_family: str = Field("gemini-2.5-flash", min_length=2, max_length=50, description="Model family")
+    hardware: str = Field("GPU", pattern="^(GPU|TPU|CPU)$", description="Execution hardware")
 
 
 class ChatRequest(BaseModel):
     """Request payload schema for green chat assistant query."""
-    query: str = Field(..., description="Conversational query")
-    provider: str = Field("gcp", description="Cloud provider")
-    region: str = Field("us-central1", description="Cloud region")
-    model_family: str = Field("gemini-2.5-flash", description="Model family")
-    media_type: str = Field("text", description="Media type for multimodal context")
-    media_count: int = Field(0, description="Media count")
-    media_duration_sec: float = Field(0.0, description="Media duration in seconds")
+    query: str = Field(..., min_length=1, max_length=5000, description="Conversational query")
+    provider: str = Field("gcp", pattern="^(gcp|aws|azure|onprem)$", description="Cloud provider")
+    region: str = Field("us-central1", min_length=2, max_length=30, description="Cloud region")
+    model_family: str = Field("gemini-2.5-flash", min_length=2, max_length=50, description="Model family")
+    media_type: str = Field("text", pattern="^(text|image|audio|video)$", description="Media type for multimodal context")
+    media_count: int = Field(0, ge=0, le=100, description="Media count")
+    media_duration_sec: float = Field(0.0, ge=0.0, le=3600.0, description="Media duration in seconds")
 
 
 class MCPToolRequest(BaseModel):
@@ -39,66 +39,66 @@ class MCPToolRequest(BaseModel):
 
 class EvalRequest(BaseModel):
     """Request payload schema for content evaluation/guardrail check."""
-    text: str = Field(..., description="Text to evaluate for safety/accuracy")
+    text: str = Field(..., min_length=1, max_length=10000, description="Text to evaluate for safety/accuracy")
 
 
 class LifestyleRequest(BaseModel):
     """Request payload schema for lifestyle carbon footprint estimation."""
-    driving_km: float = Field(12000.0, description="Annual driving distance in km")
-    vehicle_type: str = Field("gas", description="Vehicle propulsion type")
-    diet_type: str = Field("average", description="Diet pattern")
-    electricity_kwh: float = Field(4000.0, description="Annual electricity use in kWh")
-    heating_source: str = Field("gas", description="Home heating fuel")
-    shopping_level: str = Field("medium", description="Consumer spending level")
+    driving_km: float = Field(12000.0, ge=0.0, le=500000.0, description="Annual driving distance in km")
+    vehicle_type: str = Field("gas", pattern="^(gas|ev|none)$", description="Vehicle propulsion type")
+    diet_type: str = Field("average", pattern="^(vegan|vegetarian|average|meat-heavy)$", description="Diet pattern")
+    electricity_kwh: float = Field(4000.0, ge=0.0, le=100000.0, description="Annual electricity use in kWh")
+    heating_source: str = Field("gas", pattern="^(gas|electric|solar)$", description="Home heating fuel")
+    shopping_level: str = Field("medium", pattern="^(low|medium|high)$", description="Consumer spending level")
     recycling: bool = Field(True, description="Active household recycling")
 
 
 class UnstructuredIngestRequest(BaseModel):
     """Request payload schema for ingesting unstructured text reports."""
-    unstructured_text: str = Field(..., description="Raw text of emissions report")
+    unstructured_text: str = Field(..., min_length=1, max_length=50000, description="Raw text of emissions report")
 
 
 class DigitalWasteRequest(BaseModel):
     """Request payload schema for calculating digital carbon waste footprint."""
-    emails_count: int = Field(0, description="Active inbox email count")
-    cloud_storage_gb: float = Field(0.0, description="Cloud storage volume in GB")
-    duplicate_media_count: int = Field(0, description="Number of duplicate media files")
-    ai_usage_count: int = Field(0, description="Monthly AI calls count")
+    emails_count: int = Field(0, ge=0, le=1000000, description="Active inbox email count")
+    cloud_storage_gb: float = Field(0.0, ge=0.0, le=100000.0, description="Cloud storage volume in GB")
+    duplicate_media_count: int = Field(0, ge=0, le=100000, description="Number of duplicate media files")
+    ai_usage_count: int = Field(0, ge=0, le=100000, description="Monthly AI calls count")
 
 
 class CommerceLogRequest(BaseModel):
     """Request payload schema for logging a commercial transaction."""
-    store_name: str = Field(..., description="Merchant name")
-    location: str = Field(..., description="Transaction location")
-    amount_spent: float = Field(..., description="Transaction amount")
+    store_name: str = Field(..., min_length=1, max_length=200, description="Merchant name")
+    location: str = Field(..., min_length=1, max_length=200, description="Transaction location")
+    amount_spent: float = Field(..., ge=0.0, le=10000000.0, description="Transaction amount")
     is_local_override: bool = Field(False, description="Manually override locality check")
 
 
 class FoodScanRequest(BaseModel):
     """Request payload schema for scanning product food miles."""
-    product_name: str = Field(..., description="Product identifier")
-    origin: str = Field(..., description="Origin location")
+    product_name: str = Field(..., min_length=1, max_length=200, description="Product identifier")
+    origin: str = Field(..., min_length=1, max_length=200, description="Origin location")
 
 
 class TransitTripLogRequest(BaseModel):
     """Request payload schema for logging a travel trip."""
-    mode: str = Field(..., description="Transit mode (e.g. Metro)")
-    distance_km: float = Field(..., description="Trip distance in km")
+    mode: str = Field(..., min_length=1, max_length=50, description="Transit mode (e.g. Metro)")
+    distance_km: float = Field(..., ge=0.0, le=100000.0, description="Trip distance in km")
 
 
 class InfraFeedbackRequest(BaseModel):
     """Request payload schema for crowdsourced infrastructure feedback."""
-    description: str = Field(..., description="Description of the infra issue")
-    latitude: float = Field(..., description="Latitude coordinate")
-    longitude: float = Field(..., description="Longitude coordinate")
-    issue_type: str = Field(..., description="Issue category")
+    description: str = Field(..., min_length=1, max_length=1000, description="Description of the infra issue")
+    latitude: float = Field(..., ge=-90.0, le=90.0, description="Latitude coordinate")
+    longitude: float = Field(..., ge=-180.0, le=180.0, description="Longitude coordinate")
+    issue_type: str = Field(..., min_length=1, max_length=100, description="Issue category")
 
 
 class CircularItemShareRequest(BaseModel):
     """Request payload schema for lending or borrowing tools/items."""
-    item_name: str = Field(..., description="Item to share")
-    owner: str = Field("Neighbor", description="Lender name")
-    action: str = Field("lend", description="Share action (lend/borrow)")
+    item_name: str = Field(..., min_length=1, max_length=200, description="Item to share")
+    owner: str = Field("Neighbor", min_length=1, max_length=100, description="Lender name")
+    action: str = Field("lend", pattern="^(lend|borrow)$", description="Share action (lend/borrow)")
 
 
 class PartnerCheckoutRequest(BaseModel):
@@ -108,8 +108,9 @@ class PartnerCheckoutRequest(BaseModel):
 
 class LocalizeNarrationRequest(BaseModel):
     """Request payload schema for text localization and audio narration request."""
-    text: str = Field(..., description="Content to translate and narrate")
-    target_lang: str = Field("en", description="Target language code")
+    text: str = Field(..., min_length=1, max_length=10000, description="Content to translate and narrate")
+    target_lang: str = Field("en", min_length=2, max_length=5, description="Target language code")
+
 
 
 

@@ -106,6 +106,7 @@ coverage/
 # ----------------------------
 .vscode/
 .idea/
+.kiro/
 *.iml
 *.ipr
 *.iws

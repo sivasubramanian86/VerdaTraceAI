@@ -98,10 +98,10 @@ def test_get_lifestyle_emissions() -> None:
     """Verify lifestyle emissions calculations."""
     payload = {
         "driving_km": 15000,
-        "vehicle_type": "hybrid",
+        "vehicle_type": "gas",
         "diet_type": "vegetarian",
         "electricity_kwh": 3500,
-        "heating_source": "electricity",
+        "heating_source": "electric",
         "shopping_level": "medium",
         "recycling": True
     }
@@ -255,4 +255,3 @@ def test_localize_narration_endpoint() -> None:
     data = response.json()
     assert data["target_lang"] == "hi"
     assert "translated_text" in data
-

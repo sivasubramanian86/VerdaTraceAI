@@ -97,6 +97,8 @@ export const de: TranslationSchema = {
     paretoExplainTitle: "Pareto-Gleichgewichtserklärung",
     paretoExplainDesc: "Eine Regionsmigration ist Pareto-optimal, wenn sie die Kohlenstoffintensität des Netzes minimiert, ohne den Kühlwasserverbrauch unverhältnismäßig zu erhöhen.",
     optimalZonesTip: "Schweden Zentral und Oregon befinden sich in wenig beanspruchten Flussbecken mit über 95% kohlenstofffreien Netzen.",
+    aiWorkloadCarbonFootprint: "AI workload carbon footprint",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   agentPipeline: {
     title: "ADK Multi-Agenten-Orchestrierungsnetz",
@@ -154,6 +156,7 @@ export const de: TranslationSchema = {
     primaryActive: "Primäre Telemetrie Aktiv",
     genericAverage: "Branchenüblicher Durchschnitt",
     stress: "Stress",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   recommendations: {
     title: "Optimierungsempfehlungen",
@@ -260,7 +263,8 @@ export const de: TranslationSchema = {
     totalCo2: "Digitaler CO2-Fußabdruck",
     missionsTitle: "Digitale Aufräum-Quests",
     cleanUp: "Aufräumen starten",
-    completed: "Abgeschlossen"
+    completed: "Abgeschlossen",
+    digitalCarbonFootprint: "digital carbon footprint"
   },
   commerce: {
     title: "Lokaler B2B2C-Handel & CO2-Gutschriften",

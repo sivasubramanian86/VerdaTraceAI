@@ -1,386 +1,13 @@
+import hashlib
 import json
 import logging
-import math
+import re
 from typing import Any, Dict
 
 from app.agents.adk_core import SequentialAgent, SessionState
 from app.services.llm_service import llm_service
 
 logger = logging.getLogger(__name__)
-
-
-class ProjectOnboardingAgent(SequentialAgent):
-    """Validates and creates configuration metadata for new AI workloads."""
-
-    def __init__(self) -> None:
-        super().__init__("ProjectOnboardingAgent", "Validates and onboards new AI projects.")
-
-    async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
-        name = inputs.get("name")
-        provider = inputs.get("provider", "gcp")
-        region = inputs.get("region", "us-central1")
-        model_family = inputs.get("model_family", "gemini-1.5-pro")
-        hardware = inputs.get("hardware", "GPU")
-
-        if not name:
-            return {"error": "Project name is required for onboarding."}
-
-        project_config = {
-            "name": name,
-            "provider": provider,
-            "region": region,
-            "model_family": model_family,
-            "hardware": hardware,
-            "status": "active",
-        }
-
-        session.set(f"config_{name}", project_config)
-        session.set("active_project_provider", provider)
-        session.set("active_project_model_family", model_family)
-        return {"status": "success", "config": project_config}
-
-
-class UsageIngestionAgent(SequentialAgent):
-    """Normalizes and logs usage snapshotted data (tokens, runtimes)."""
-
-    def __init__(self) -> None:
-        super().__init__("UsageIngestionAgent", "Normalizes and ingests usage logs.")
-
-    async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
-        calls = inputs.get("calls", 0)
-        prompt_tokens = inputs.get("prompt_tokens", 0)
-        completion_tokens = inputs.get("completion_tokens", 0)
-
-        # Context Caching calculations: if caching enabled, reduce total tokens billed/processed
-        caching_enabled = inputs.get("caching_enabled", False)
-        cached_tokens = inputs.get("cached_tokens", 0)
-
-        effective_tokens = prompt_tokens + completion_tokens
-        if caching_enabled:
-            effective_tokens = max(0, effective_tokens - cached_tokens)
-
-        usage_snapshot = {
-            "calls": calls,
-            "raw_tokens": prompt_tokens + completion_tokens,
-            "effective_tokens": effective_tokens,
-            "caching_active": caching_enabled,
-            "media_type": inputs.get("media_type", "text"),
-            "media_count": inputs.get("media_count", 0),
-            "media_duration_sec": inputs.get("media_duration_sec", 0.0),
-        }
-
-        session.set("latest_usage", usage_snapshot)
-        return {"status": "success", "usage": usage_snapshot}
-
-
-class CarbonEstimationAgent(SequentialAgent):
-    """Estimates power consumption (kWh) and greenhouse emissions (gCO2e)."""
-
-    def __init__(self) -> None:
-        super().__init__("CarbonEstimationAgent", "Calculates kWh and CO2e based on region and hardware.")
-
-    async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
-        runtime = inputs.get("runtime_ms", 1000)
-        region = inputs.get("region", "us-central1")
-        model_family = inputs.get("model_family") or session.get("active_project_model_family") or "gemini-1.5-pro"
-        execution_hour = inputs.get("execution_hour", 12)
-
-        # Grid carbon intensities (gCO2e per kWh) across GCP, AWS, Azure, Onprem
-        intensity_map = {
-            # GCP
-            "us-central1": 400,
-            "europe-west4": 50,
-            "us-east4": 450,
-            # AWS
-            "us-east-1": 450,
-            "us-west-2": 80,
-            "eu-west-1": 280,
-            "eu-central-1": 350,
-            # Azure
-            "eastus": 450,
-            "westeurope": 50,
-            "swedencentral": 10,
-            # On-Prem
-            "local-onprem": 380,
-        }
-        intensity = intensity_map.get(region, 300)
-
-        # Apply diurnal curve factor: solar midday (12 PM) drops intensity by 30%, nighttime increases it.
-        diurnal_factor = 1.0 - 0.3 * math.sin((execution_hour - 6) * math.pi / 12)
-        intensity = int(intensity * diurnal_factor)
-
-        # Baseline active power of standard GPU/TPU/CPU accelerator in kWh per execution second
-        power_map = {
-            # Heavy reasoning models
-            "gemini-2.5-pro": 0.008,
-            "gemini-1.5-pro": 0.008,
-            "gpt-4o": 0.010,
-            "claude-3-5-sonnet": 0.009,
-            "llama-3-1-70b": 0.009,
-            "llama-3-70b": 0.009,
-            # Energy efficient/smaller models
-            "gemini-2.5-flash": 0.002,
-            "gemini-1.5-flash": 0.002,
-            "gemini-2.0-flash": 0.002,
-            "gpt-4o-mini": 0.003,
-            "claude-3-haiku": 0.0025,
-            "llama-3-8b": 0.002,
-            "mistral-7b": 0.002,
-        }
-        baseline_sec_power = power_map.get(model_family.lower(), 0.005)
-
-        # Baseline Power consumed based on model footprint
-        kwh_consumed = (runtime / 1000.0) * baseline_sec_power
-
-        # Incorporate multimodal data-processing active energy consumption
-        latest_usage = session.get("latest_usage", {})
-        media_type = latest_usage.get("media_type", inputs.get("media_type", "text"))
-        media_count = latest_usage.get("media_count", inputs.get("media_count", 0))
-        media_duration_sec = latest_usage.get("media_duration_sec", inputs.get("media_duration_sec", 0.0))
-
-        multimodal_kwh = 0.0
-        if media_type == "image":
-            multimodal_kwh = media_count * 0.002
-        elif media_type == "audio":
-            multimodal_kwh = media_duration_sec * 0.0005
-        elif media_type == "video":
-            multimodal_kwh = media_duration_sec * 0.004
-
-        kwh_consumed += multimodal_kwh
-        co2e_emitted = (kwh_consumed * intensity) / 1000.0  # kg CO2e
-
-        # Water intensity factor (Liters of water per kWh consumed based on cooling tech)
-        water_intensity_map = {
-            "us-central1": 1.8,
-            "europe-west4": 0.2,
-            "us-east4": 1.9,
-            "us-east-1": 1.9,
-            "us-west-2": 0.5,
-            "eu-west-1": 0.8,
-            "eu-central-1": 0.8,
-            "eastus": 1.9,
-            "westeurope": 0.3,
-            "swedencentral": 0.1,
-            "local-onprem": 1.5,
-        }
-        water_intensity = water_intensity_map.get(region, 1.2)
-        water_consumed_liters = kwh_consumed * water_intensity
-
-        # Nature Offset Equivalents:
-        trees_offset = co2e_emitted * 0.5
-        ocean_seagrass_sqm = co2e_emitted * 0.8
-
-        # Calculate Data Uncertainty confidence margin (unsolved problem solution)
-        caching_active = latest_usage.get("caching_active", False)
-        if caching_active and media_type != "text":
-            uncertainty_pct = 5  # Rich telemetry: High confidence
-        elif caching_active or media_type != "text":
-            uncertainty_pct = 12
-        else:
-            uncertainty_pct = 22  # Generic estimates only: Low confidence
-
-        # Calculate Water Stress Index (unsolved problem trade-off mapping)
-        water_stress_map = {
-            "us-central1": "Medium",
-            "europe-west4": "Low",
-            "us-east4": "High",
-            "us-east-1": "High",
-            "us-west-2": "Low",
-            "eu-west-1": "Low",
-            "eu-central-1": "Medium",
-            "eastus": "High",
-            "westeurope": "Low",
-            "swedencentral": "Low",
-            "local-onprem": "Medium",
-        }
-        water_stress_index = water_stress_map.get(region, "Medium")
-
-        result = {
-            "kwh_consumed": round(kwh_consumed, 4),
-            "co2e_emitted_kg": round(co2e_emitted, 4),
-            "water_liters": round(water_consumed_liters, 4),
-            "trees_offset": round(trees_offset, 4),
-            "ocean_seagrass_sqm": round(ocean_seagrass_sqm, 4),
-            "uncertainty_pct": uncertainty_pct,
-            "water_stress_index": water_stress_index,
-            "execution_hour": execution_hour,
-            "green_score": max(10, min(100, int(100 - (co2e_emitted * 10)))),
-        }
-        session.set("latest_emission", result)
-        return result
-
-
-class OptimizationStrategyAgent(SequentialAgent):
-    """Uses LLM to recommend green deployment configurations."""
-
-    def __init__(self) -> None:
-        super().__init__("OptimizationStrategyAgent", "Uses Gemini Flash to generate fast green optimizations.")
-
-    async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
-        region = inputs.get("region", "us-central1")
-        model_family = inputs.get("model_family", "gemini-1.5-pro")
-        provider = inputs.get("provider", "gcp")
-
-        model = llm_service.get_flash_model()
-        if not model:
-            if provider == "aws":
-                recommendations = [
-                    "- Shift AWS workloads to us-west-2 (Oregon) to reduce carbon intensity "
-                    "by 82% and water usage by 73%.",
-                    "- Downsize to Claude 3 Haiku / Llama 3 8B to cut baseline GPU power footprint.",
-                    "- Sponsor verified ocean blue carbon projects (seagrass planting) to accelerate carbon capture.",
-                ]
-            elif provider == "azure":
-                recommendations = [
-                    "- Shift Azure workloads to swedencentral to achieve a 10g/kWh grid "
-                    "intensity and 95% cooling water savings.",
-                    "- Downsize to GPT-4o-mini to reduce energy consumption by up to 70%.",
-                    "- Implement reforestation initiatives (planting native trees) to offset "
-                    "remaining scope 3 cloud emissions.",
-                ]
-            elif provider == "onprem":
-                recommendations = [
-                    "- Optimize local hardware utilization or transition batch summaries "
-                    "to low-carbon off-peak grid hours.",
-                    "- Use air-cooled local enclosures or high-efficiency water loops to minimize local water waste.",
-                    "- Deploy highly quantized open source models (e.g. Llama 3 8B INT4) "
-                    "to decrease processor execution seconds.",
-                ]
-            else:
-                recommendations = [
-                    "- Shift GCP workloads to europe-west4 (Eemshaven) for a 93% CFE match and 90% water reduction.",
-                    "- Downsize to Gemini 1.5 Flash to save active accelerator cycles.",
-                    "- Enable Vertex AI Context Caching to save 40% of compute energy on repetitive prompts.",
-                ]
-            session.set("latest_recommendations", recommendations)
-            return {"recommendations": recommendations}
-
-        prompt = f"""
-        You are a Sustainability Optimization Expert.
-        The current AI workload is running on provider '{provider.upper()}' using '{model_family}' in region '{region}'.
-        Recommend 2 actionable, provider-specific steps to reduce the carbon footprint.
-        Examples include green region shifts, model downsizing, and context caching.
-        Recommend 1 physical eco-step such as water cooling optimization, tree planting,
-        or ocean blue carbon seagrass and mangrove offsets.
-        Return purely as a bulleted markdown list.
-        """
-
-        try:
-            response = model.generate_content(prompt)
-            recommendations = response.text.split("\n")
-        except Exception as e:
-            recommendations = [f"Error generating optimizations: {e}"]
-
-        session.set("latest_recommendations", recommendations)
-        return {"recommendations": recommendations}
-
-
-class AgenticRAGExplainerAgent(SequentialAgent):
-    """Uses RAG data logic to provide scientifically backed optimization metrics."""
-
-    def __init__(self) -> None:
-        super().__init__("AgenticRAGExplainerAgent", "Explains sustainability concepts using Gemini Pro and Context.")
-
-    async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
-        model = llm_service.get_pro_model()
-        query = inputs.get("query", "Why is europe-west4 greener?")
-
-        mock_context = (
-            "GCP CFE 2023 Report: europe-west4 (Eemshaven) operates at 93% Carbon Free Energy. "
-            "AWS Sustainability Report: us-west-2 (Oregon) is highly powered by clean "
-            "hydroelectric grids, reducing intensity to 80g/kWh. "
-            "Azure Sustainability Index: swedencentral is powered by 100% carbon-free "
-            "hydro and nuclear power, reducing carbon intensity to 10g/kWh. "
-            "On-Premises Baseline: Local deployments default to the average US grid carbon intensity (~380g/kWh). "
-            "Water Footprint of AI: Large language models require water for server "
-            "cooling, typically 500ml per 10-50 queries. "
-            "Shifting to air-cooled sites saves 95% water. "
-            "Ocean Blue Carbon: Ocean seagrass meadows, mangroves, and kelp forests "
-            "store up to 10 times more carbon per square meter than tropical forests. "
-            "Forest Reforestation: Terrestrial tree planting absorbs carbon over long "
-            "periods, with one native tree absorbing about 22kg of CO2 per year."
-        )
-
-        prompt = f"""
-        You are the VerdaTraceAI Green Copilot.
-        Use this context: {mock_context}
-        Answer the user's question concisely: {query}
-        Provide the response in the same language as the user's question.
-        """
-
-        if not model:
-            return {"explanation": f"Vertex AI not initialized. Mock Context Answer: {mock_context}"}
-
-        try:
-            response = model.generate_content(prompt)
-            return {"explanation": response.text}
-        except Exception as e:
-            return {"explanation": f"Failed to generate explanation. Error: {e}"}
-
-
-class GreenCopilotChatAgent(SequentialAgent):
-    """Fronts user-facing chat, merging RAG context with latest metrics."""
-
-    def __init__(self) -> None:
-        super().__init__("GreenCopilotChatAgent", "Combines metrics, RAG, and user query.")
-
-    async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
-        query = inputs.get("query", "")
-        latest_emission = session.get("latest_emission", {})
-
-        prompt = f"""
-        User Query: {query}
-        Latest Workspace Metrics: {json.dumps(latest_emission)}
-        Provide a concise response helping the user understand and reduce carbon footprint.
-        Provide the response in the same language as the user query.
-        """
-        model = llm_service.get_pro_model()
-        if not model:
-            return {"response": "Vertex AI Offline. Please optimize your caching thresholds."}
-        try:
-            response = model.generate_content(prompt)
-            return {"response": response.text}
-        except Exception as e:
-            return {"response": f"Chat failure: {e}"}
-
-
-class MCPDataConnectorAgent(SequentialAgent):
-    """Integrates database and tools access via Model Context Protocol."""
-
-    def __init__(self) -> None:
-        super().__init__("MCPDataConnectorAgent", "Connects to MCP schema registries and datasets.")
-
-    async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
-        tool_name = inputs.get("tool_name", "get_project_emissions")
-        # Direct simulation of MCP Toolbox Server calls
-        if tool_name == "get_project_emissions":
-            return {"total_co2e": 142.5, "trend": "-12%", "status": "mcp_ok"}
-        elif tool_name == "get_recommendations":
-            return {"recommendations": ["Europe Migration", "Context Caching"], "status": "mcp_ok"}
-        return {"status": "mcp_not_found"}
-
-
-class EvalAndGuardrailAgent(SequentialAgent):
-    """Enforces safety rules, safety parameters, and logs eval indicators."""
-
-    def __init__(self) -> None:
-        super().__init__("EvalAndGuardrailAgent", "Validates output quality and logs leaderboard metrics.")
-
-    async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
-        text_to_validate = inputs.get("text", "")
-
-        # Guardrail logic (check for hallucinated cloud providers)
-        hallucinations = ["fake-cloud", "hallucinated-cloud"]
-        flagged = any(h in text_to_validate.lower() for h in hallucinations)
-
-        status = "flagged" if flagged else "safe"
-        session.set("last_guardrail_status", status)
-
-        return {
-            "status": status,
-            "safety_checked": True,
-            "metrics": {"hallucination_detected": flagged, "score": 1.0 if not flagged else 0.0},
-        }
 
 
 class LifestyleEstimationAgent(SequentialAgent):
@@ -393,6 +20,36 @@ class LifestyleEstimationAgent(SequentialAgent):
         )
 
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
+        """Estimates yearly personal carbon footprint across four lifestyle categories.
+
+        Args:
+            inputs: Dictionary of lifestyle parameters:
+                - driving_km (float): Annual driving distance in kilometres. Defaults to 12000.0.
+                - vehicle_type (str): Propulsion type — ``"gas"``, ``"ev"``,
+                  ``"electric_car"`` (alias for ``"ev"``), or ``"none"``.
+                  Defaults to ``"gas"``.
+                - diet_type (str): Dietary pattern — ``"vegan"``, ``"vegetarian"``,
+                  ``"average"``, or ``"meat-heavy"``. Defaults to ``"average"``.
+                - electricity_kwh (float): Annual household electricity use in kWh.
+                  Defaults to 4000.0.
+                - heating_source (str): Heating energy source — ``"gas"``,
+                  ``"electric"``, or ``"solar"``. Defaults to ``"gas"``.
+                - shopping_level (str): Consumer shopping intensity — ``"low"``,
+                  ``"medium"``, or ``"high"``. Defaults to ``"medium"``.
+                - recycling (bool): Whether the household actively recycles.
+                  Defaults to ``True``.
+            session: Active ``SessionState`` used to persist the result under the
+                ``"latest_lifestyle"`` key.
+
+        Returns:
+            A dictionary containing:
+                - ``lifestyle_co2_yr_kg`` (float): Total annual CO2e in kg (rounded to 2 dp).
+                - ``vehicle_co2_kg`` (float): Transport contribution in kg CO2e.
+                - ``diet_co2_kg`` (float): Diet contribution in kg CO2e.
+                - ``energy_co2_kg`` (float): Energy contribution in kg CO2e.
+                - ``consumption_co2_kg`` (float): Consumption contribution in kg CO2e.
+                - ``sustainability_rank`` (str): Descriptive sustainability tier.
+        """
         driving_km = inputs.get("driving_km", 12000.0)  # km per year
         vehicle_type = inputs.get("vehicle_type", "gas")  # "gas" or "ev" or "none"
         diet_type = inputs.get("diet_type", "average")  # "vegan", "vegetarian", "average", "meat-heavy"
@@ -400,6 +57,10 @@ class LifestyleEstimationAgent(SequentialAgent):
         heating_source = inputs.get("heating_source", "gas")  # "gas" or "electric" or "solar"
         shopping_level = inputs.get("shopping_level", "medium")  # "low", "medium", "high"
         recycling = inputs.get("recycling", True)
+
+        # Normalise "electric_car" to "ev" so both aliases behave identically
+        if vehicle_type == "electric_car":
+            vehicle_type = "ev"
 
         # 1. Transportation Carbon Footprint (kg CO2e / yr)
         if vehicle_type == "gas":
@@ -527,8 +188,6 @@ class Scope3UnstructuredIngestAgent(SequentialAgent):
         if "cache" in text_lower or "caching" in text_lower:
             caching_enabled = True
 
-        import re
-
         numbers = re.findall(r"\b\d+(?:,\d+)?\b", text)
         clean_nums = [int(num.replace(",", "")) for num in numbers]
         if len(clean_nums) >= 1:
@@ -569,8 +228,6 @@ class Scope3UnstructuredIngestAgent(SequentialAgent):
             except Exception as exc:
                 logger.debug("Unstructured supplier parse fallback used: %s", exc)
 
-        import hashlib
-
         # Hash text to generate an audit receipt hash
         audit_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
 
@@ -595,6 +252,29 @@ class DigitalWasteAgent(SequentialAgent):
         super().__init__("DigitalWasteAgent", "Estimates digital footprint and suggests cleanup quests.")
 
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
+        """Estimates digital carbon footprint and generates applicable clean-up missions.
+
+        Args:
+            inputs: Dictionary of digital usage metrics:
+                - emails_count (int): Number of stored emails. Defaults to 0.
+                - cloud_storage_gb (float): Cloud storage consumed in gigabytes.
+                  Defaults to 0.0.
+                - duplicate_media_count (int): Number of duplicate media files.
+                  Defaults to 0.
+                - ai_usage_count (int): Number of AI API queries made. Defaults to 0.
+            session: Active ``SessionState`` used to persist the result under the
+                ``"latest_digital_waste"`` key.
+
+        Returns:
+            A dictionary containing:
+                - ``digital_co2e_kg`` (float): Total digital CO2e in kg (rounded to 4 dp).
+                - ``emails_count`` (int): Echo of the input email count.
+                - ``cloud_storage_gb`` (float): Echo of the input storage value.
+                - ``duplicate_media_count`` (int): Echo of the input duplicate count.
+                - ``missions`` (list[dict]): Zero or more clean-up mission objects,
+                  each with ``id``, ``title``, ``description``, ``carbon_savings_g``,
+                  ``credits_reward``, and ``status`` fields.
+        """
         emails_count = inputs.get("emails_count", 0)
         cloud_storage_gb = inputs.get("cloud_storage_gb", 0.0)
         duplicate_media = inputs.get("duplicate_media_count", 0)
@@ -651,6 +331,34 @@ class Scope3CommerceAgent(SequentialAgent):
         super().__init__("Scope3CommerceAgent", "Checks shipping logistics and handles local B2B2C rewards.")
 
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
+        """Calculates Scope 3 commerce emissions and awards Carbon Credits for local purchases.
+
+        Args:
+            inputs: Dictionary of purchase details:
+                - store_name (str): Name of the retailer or vendor.
+                  Defaults to ``"Unknown Store"``.
+                - location (str): Purchase location string used to identify
+                  Bengaluru/Karnataka keywords. Defaults to ``"Bengaluru"``.
+                - amount_spent (float): Purchase amount in INR. Defaults to 0.0.
+                - is_local_override (bool): When ``True``, forces the purchase to be
+                  treated as local regardless of the location string. Defaults to
+                  ``False``.
+            session: Active ``SessionState`` used to append to the ``"credits_ledger"``
+                list.
+
+        Returns:
+            A dictionary containing:
+                - ``store_name`` (str): Echo of the input store name.
+                - ``location`` (str): Echo of the input location.
+                - ``is_local`` (int): ``1`` if the purchase qualifies as local,
+                  ``0`` otherwise.
+                - ``amount_spent`` (float): Echo of the input amount.
+                - ``logistics_savings_kg`` (float): Estimated logistics CO2e saved
+                  (kg) for local purchases; ``0.0`` for non-local.
+                - ``credits_earned`` (int): Carbon credits awarded.  Formula:
+                  ``int(amount * 0.5) + 50`` for local purchases;
+                  ``int(amount * 0.1)`` for non-local.
+        """
         store_name = inputs.get("store_name", "Unknown Store")
         location = inputs.get("location", "Bengaluru")
         amount_spent = inputs.get("amount_spent", 0.0)
@@ -940,27 +648,14 @@ class LocalizationAndNarrationAgent(SequentialAgent):
         # Localized greetings and summaries dictionary stubs
         translations = {
             "kn": {
-                "greeting": (
-                    "\u0ca8\u0cae\u0cb8\u0ccd\u0c95\u0cbe\u0cb0, \u0ca8\u0cbe\u0ca8\u0cc1 VerdaTrace Copilot."
-                ),
-                "carbon_saving": (
-                    "\u0ca8\u0cbf\u0cae\u0ccd\u0cae CO2 \u0c89\u0cb3\u0cbf\u0ca4\u0cbe\u0caf: {value} kg."
-                ),
-                "recommendation": (
-                    "\u0ca8\u0cbf\u0cae\u0ccd\u0cae \u0cae\u0cbe\u0ca6\u0cb0\u0cbf\u0caf\u0ca8\u0ccd\u0ca8\u0cc1 "
-                    "europe-west4 \u0c97\u0cc6 \u0cb5\u0cb0\u0ccd\u0c97\u0cbe\u0caf\u0cbf\u0cb8\u0cbf."
-                ),
+                "greeting": "\u0ca8\u0cae\u0cb8\u0ccd\u0c95\u0cbe\u0cb0, \u0ca8\u0cbe\u0ca8\u0cc1 VerdaTrace Copilot.",
+                "carbon_saving": "\u0ca8\u0cbf\u0cae\u0ccd\u0cae CO2 \u0c89\u0cb3\u0cbf\u0ca4\u0cbe\u0caf: {value} kg.",
+                "recommendation": "\u0ca8\u0cbf\u0cae\u0ccd\u0cae \u0cae\u0cbe\u0ca6\u0cb0\u0cbf\u0caf\u0ca8\u0ccd\u0ca8\u0cc1 europe-west4 \u0c97\u0cc6 \u0cb5\u0cb0\u0ccd\u0c97\u0cbe\u0caf\u0cbf\u0cb8\u0cbf.",
             },
             "hi": {
-                "greeting": (
-                    "\u0928\u092e\u0938\u094d\u0924\u0947, \u092e\u0948\u0902 VerdaTrace Copilot \u0939\u0942\u0902."
-                ),
+                "greeting": "\u0928\u092e\u0938\u094d\u0924\u0947, \u092e\u0948\u0902 VerdaTrace Copilot \u0939\u0942\u0902.",
                 "carbon_saving": "\u0906\u092a\u0915\u0940 CO2 \u092c\u091a\u0924: {value} kg.",
-                "recommendation": (
-                    "\u0905\u092a\u0928\u0947 \u092e\u0949\u0921\u0932 \u0915\u094b europe-west4 "
-                    "\u092a\u0930 \u0938\u094d\u0925\u093e\u0928\u093e\u0902\u0924\u0930\u093f\u0924 "
-                    "\u0915\u0930\u0947\u0902."
-                ),
+                "recommendation": "\u0905\u092a\u0928\u0947 \u092e\u0949\u0921\u0932 \u0915\u094b europe-west4 \u092a\u0930 \u0938\u094d\u0925\u093e\u0928\u093e\u0902\u0924\u0930\u093f\u0924 \u0915\u0930\u0947\u0902.",
             },
             "ta": {
                 "greeting": "Vanakkam, I am VerdaTrace Copilot.",

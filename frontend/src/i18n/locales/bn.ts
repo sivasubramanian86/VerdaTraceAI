@@ -94,6 +94,8 @@ export const bn: TranslationSchema = {
     paretoExplainTitle: "প্যারেটো ভারসাম্য ব্যাখ্যা",
     paretoExplainDesc: "কুলিং জলের ব্যবহার না বাড়িয়ে কার্বন হ্রাস করা।",
     optimalZonesTip: "সুইডেন ও ওরেগন কম চাপের এলাকায় কাজ করছে।",
+    aiWorkloadCarbonFootprint: "AI workload carbon footprint",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   agentPipeline: {
     title: "ADK মাল্টি-এজেন্ট অর্কেস্ট্রেশন মেশ",
@@ -151,6 +153,7 @@ export const bn: TranslationSchema = {
     primaryActive: "প্রাথমিক টেলিমেট্রি সক্রিয়",
     genericAverage: "শিল্প গড়",
     stress: "চাপ",
+    scope3EmissionsPhrase: "Scope 3 emissions linked to AI-enabled services"
   },
   recommendations: {
     title: "সুপারিশ সমূহ",
@@ -257,7 +260,8 @@ export const bn: TranslationSchema = {
     totalCo2: "ডিজিটাল কার্বন ফুটপ্রিন্ট",
     missionsTitle: "ডিজিটাল পরিচ্ছন্নতা অভিযান",
     cleanUp: "পরিষ্কার করা শুরু করুন",
-    completed: "সম্পন্ন"
+    completed: "সম্পন্ন",
+    digitalCarbonFootprint: "digital carbon footprint"
   },
   commerce: {
     title: "B2B2C স্থানীয় বাণিজ্য এবং কার্বন ক্রেডিট",

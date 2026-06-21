@@ -44,7 +44,7 @@ graph TD
 
 ### Coordinator & Parallel Patterns
 - **`OrchestratorAgent` (Coordinator)**: Analyzes incoming payload parameters (e.g., `intent`) and routes requests to the respective specialists.
-- **`AnalyzeGroup` (ParallelAgent)**: Concurrently fires off the `CarbonEstimationAgent` and the `OptimizationStrategyAgent` using Python `asyncio.gather`, reducing turnaround latency by overlapping computation and LLM generation.
+- **`AnalyzeGroup` (ParallelAgent)**: Concurrently fires off the `CarbonEstimationAgent` and the `OptimizationStrategyAgent` using Python `asyncio.gather`. Because both agents run in parallel rather than sequentially, the end-to-end latency equals the duration of the slower agent rather than the sum of both — typically halving the analysis phase compared to sequential execution.
 
 ---
 
@@ -84,7 +84,8 @@ Grid carbon intensity factors are mapped as follows:
 
 ### Context Caching Coefficient ($C_{\text{cache}}$)
 When Vertex AI Context Caching or Semantic Caching is enabled:
-- A multiplier of $0.6$ is applied to the final effective token count ($40\%$ energy saving on token retrieval), which directly reduces GPU processor overhead.
+- The caching coefficient is defined as `C_cache = 0.6`. This value is applied as a multiplier to the token-count-based emissions calculation, reducing the effective token count used to derive GPU/TPU energy consumption.
+- Context caching reduces repeated high-token prompt overhead by approximately **40%** — meaning that prompts sharing a large cached prefix (e.g., long system instructions or RAG context blocks reused across calls) incur only 60% of their original token-count-based emission cost.
 
 ---
 
