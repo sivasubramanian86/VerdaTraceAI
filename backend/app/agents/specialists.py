@@ -112,12 +112,14 @@ class CarbonEstimationAgent(SequentialAgent):
         # Baseline active power of standard GPU/TPU/CPU accelerator in kWh per execution second
         power_map = {
             # Heavy reasoning models
+            "gemini-2.5-pro": 0.008,
             "gemini-1.5-pro": 0.008,
             "gpt-4o": 0.010,
             "claude-3-5-sonnet": 0.009,
             "llama-3-1-70b": 0.009,
             "llama-3-70b": 0.009,
             # Energy efficient/smaller models
+            "gemini-2.5-flash": 0.002,
             "gemini-1.5-flash": 0.002,
             "gemini-2.0-flash": 0.002,
             "gpt-4o-mini": 0.003,

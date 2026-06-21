@@ -156,7 +156,7 @@ async def get_emissions(
     project_id: str,
     provider: str = "gcp",
     region: str = "us-east4",
-    model_family: str = "gemini-1.5-pro",
+    model_family: str = "gemini-2.5-pro",
     execution_hour: int = 12,
     media_type: str = "text",
     media_count: int = 0,
