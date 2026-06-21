@@ -1,9 +1,12 @@
 import json
+import logging
 import math
 from typing import Any, Dict
 
 from app.agents.adk_core import SequentialAgent, SessionState
 from app.services.llm_service import llm_service
+
+logger = logging.getLogger(__name__)
 
 
 class ProjectOnboardingAgent(SequentialAgent):
@@ -214,6 +217,7 @@ class OptimizationStrategyAgent(SequentialAgent):
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
         region = inputs.get("region", "us-central1")
         model_family = inputs.get("model_family", "gemini-1.5-pro")
+        provider = inputs.get("provider", "gcp")
 
         model = llm_service.get_flash_model()
         if not model:

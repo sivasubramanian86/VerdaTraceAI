@@ -37,7 +37,6 @@ exclude = [
 # Enable Google-style docstrings (D), type annotations (ANN), security (S), standard errors (E/W/F), bugbear (B), isort (I)
 select = ["D", "ANN", "S", "E", "W", "F", "B", "I"]
 ignore = [
-    "ANN101", # Missing type annotation for `self`
     "ANN204", # Redundant type annotations on special methods like __init__
     "ANN401", # Disallow Any (necessary for dynamic inputs/states)
     "D100",   # Missing docstring in public module
