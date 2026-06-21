@@ -31,7 +31,7 @@ class AgnosticModel:
         is_french = any(w in prompt_lower for w in ["bonjour", "comment", "carbone", "francais", "français"])
         is_german = any(w in prompt_lower for w in ["hallo", "wie", "kohlenstoff", "deutsch"])
 
-        if "actionable steps" in prompt_lower or "carbon optimization expert" in prompt_lower:
+        if "actionable steps" in prompt_lower or "optimization expert" in prompt_lower:
             if is_spanish:
                 response_text += (
                     "- Migrar cargas de trabajo a europe-west4 (Países Bajos) para reducir intensidad de carbono.\n"

@@ -4,16 +4,16 @@ import os
 from typing import Any
 
 from fastapi import APIRouter
+from pydantic import BaseModel, Field
 
 from app.agents.adk_core import SessionState
 from app.agents.orchestrator import orchestrator
-
-from pydantic import BaseModel, Field
 
 router = APIRouter()
 
 
 class ProjectCreateRequest(BaseModel):
+    """Request payload schema for creating a project."""
     name: str = Field(..., description="Project name")
     provider: str = Field("gcp", description="Cloud provider")
     region: str = Field("us-central1", description="Cloud region")
@@ -22,6 +22,7 @@ class ProjectCreateRequest(BaseModel):
 
 
 class ChatRequest(BaseModel):
+    """Request payload schema for green chat assistant query."""
     query: str = Field(..., description="Conversational query")
     provider: str = Field("gcp", description="Cloud provider")
     region: str = Field("us-central1", description="Cloud region")
@@ -32,14 +33,17 @@ class ChatRequest(BaseModel):
 
 
 class MCPToolRequest(BaseModel):
+    """Request payload schema for calling an MCP tool."""
     arguments: dict[str, Any] = Field(default_factory=dict, description="Tool arguments")
 
 
 class EvalRequest(BaseModel):
+    """Request payload schema for content evaluation/guardrail check."""
     text: str = Field(..., description="Text to evaluate for safety/accuracy")
 
 
 class LifestyleRequest(BaseModel):
+    """Request payload schema for lifestyle carbon footprint estimation."""
     driving_km: float = Field(12000.0, description="Annual driving distance in km")
     vehicle_type: str = Field("gas", description="Vehicle propulsion type")
     diet_type: str = Field("average", description="Diet pattern")
@@ -50,10 +54,12 @@ class LifestyleRequest(BaseModel):
 
 
 class UnstructuredIngestRequest(BaseModel):
+    """Request payload schema for ingesting unstructured text reports."""
     unstructured_text: str = Field(..., description="Raw text of emissions report")
 
 
 class DigitalWasteRequest(BaseModel):
+    """Request payload schema for calculating digital carbon waste footprint."""
     emails_count: int = Field(0, description="Active inbox email count")
     cloud_storage_gb: float = Field(0.0, description="Cloud storage volume in GB")
     duplicate_media_count: int = Field(0, description="Number of duplicate media files")
@@ -61,6 +67,7 @@ class DigitalWasteRequest(BaseModel):
 
 
 class CommerceLogRequest(BaseModel):
+    """Request payload schema for logging a commercial transaction."""
     store_name: str = Field(..., description="Merchant name")
     location: str = Field(..., description="Transaction location")
     amount_spent: float = Field(..., description="Transaction amount")
@@ -68,16 +75,19 @@ class CommerceLogRequest(BaseModel):
 
 
 class FoodScanRequest(BaseModel):
+    """Request payload schema for scanning product food miles."""
     product_name: str = Field(..., description="Product identifier")
     origin: str = Field(..., description="Origin location")
 
 
 class TransitTripLogRequest(BaseModel):
+    """Request payload schema for logging a travel trip."""
     mode: str = Field(..., description="Transit mode (e.g. Metro)")
     distance_km: float = Field(..., description="Trip distance in km")
 
 
 class InfraFeedbackRequest(BaseModel):
+    """Request payload schema for crowdsourced infrastructure feedback."""
     description: str = Field(..., description="Description of the infra issue")
     latitude: float = Field(..., description="Latitude coordinate")
     longitude: float = Field(..., description="Longitude coordinate")
@@ -85,18 +95,22 @@ class InfraFeedbackRequest(BaseModel):
 
 
 class CircularItemShareRequest(BaseModel):
+    """Request payload schema for lending or borrowing tools/items."""
     item_name: str = Field(..., description="Item to share")
     owner: str = Field("Neighbor", description="Lender name")
     action: str = Field("lend", description="Share action (lend/borrow)")
 
 
 class PartnerCheckoutRequest(BaseModel):
+    """Request payload schema for commercial cart carbon offsets."""
     cart_items: list[dict[str, Any]] = Field(default_factory=list, description="Checkout cart items")
 
 
 class LocalizeNarrationRequest(BaseModel):
+    """Request payload schema for text localization and audio narration request."""
     text: str = Field(..., description="Content to translate and narrate")
     target_lang: str = Field("en", description="Target language code")
+
 
 
 
