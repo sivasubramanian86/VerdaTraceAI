@@ -151,11 +151,11 @@ class LLMService:
 
     def get_pro_model(self) -> Any:
         """Returns Gemini Pro equivalent for orchestration/RAG."""
-        return self._get_model("gemini-3.5-pro", "gemini-2.5-pro")
+        return self._get_model("gemini-2.5-pro", "gemini-1.5-pro")
 
     def get_flash_model(self) -> Any:
         """Returns Gemini Flash equivalent for fast inference/optimization tasks."""
-        return self._get_model("gemini-3.5-flash", "gemini-2.5-flash")
+        return self._get_model("gemini-2.5-flash", "gemini-1.5-flash")
 
 
 # Singleton instance
