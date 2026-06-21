@@ -12,9 +12,18 @@
 
 **A production-grade, multi-agent Carbon Intelligence Copilot for AI workloads — built for the PromptWars Hackathon on Google Cloud.**
 
-[Live Demo](#live-demo) · [Architecture](#architecture) · [Quick Start](#quick-start) · [API Reference](#api-reference) · [Deployment](#deployment)
+[Live Demo](https://verdatraceai.web.app/) · [Architecture](#architecture) · [Quick Start](#quick-start) · [API Reference](#api-reference) · [Deployment](#deployment)
 
 </div>
+
+---
+
+## Live Demo
+
+VerdaTraceAI is fully deployed on Google Cloud and Firebase:
+
+* **Web Application (Frontend)**: [https://verdatraceai.web.app/](https://verdatraceai.web.app/)
+* **REST API Backend**: [https://verdatrace-backend-d3ongjq7oq-uc.a.run.app/docs](https://verdatrace-backend-d3ongjq7oq-uc.a.run.app/docs) (Swagger UI)
 
 ---
 
