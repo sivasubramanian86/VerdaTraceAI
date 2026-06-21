@@ -1,0 +1,28 @@
+# Declarative infrastructure and environment provisioning config for VerdaTraceAI
+environments:
+  dev:
+    project: "promptwars-demo-project"
+    region: "us-central1"
+    composer_environment: "composer-test-c3-1"
+    artifact_storage:
+      bucket: "verdatrace-artifacts-dev"
+      path_prefix: "verdatrace-"
+    pipelines:
+      - source: "orchestration-pipeline.yaml"
+    variables:
+      use_alloydb: "False"
+      llm_provider: "vertex-ai"
+    resources:
+      - type: "alloydb.Instance"
+        name: "verdatrace-db"
+        definition:
+          labels:
+            datacloud: "antigravity"
+          settings:
+            databaseVersion: "POSTGRES_15"
+            region: "us-central1"
+      - type: "alloydb.Database"
+        name: "verdatrace-db/verdatrace"
+        definition:
+          labels:
+            datacloud: "antigravity"

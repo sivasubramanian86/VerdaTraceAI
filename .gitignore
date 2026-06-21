@@ -1,0 +1,140 @@
+# =============================================
+# VerdaTraceAI — Comprehensive .gitignore
+# =============================================
+
+# ----------------------------
+# Secrets & Environment Files
+# ----------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.csr
+service-account*.json
+*-credentials.json
+gcp-key*.json
+firebase-adminsdk*.json
+application_default_credentials.json
+
+# ----------------------------
+# Python
+# ----------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv.bak/
+__pyrefly_virtual__/
+
+# Ruff / Bandit caches
+.ruff_cache/
+.bandit
+
+# ----------------------------
+# Node / Frontend
+# ----------------------------
+node_modules/
+dist/
+dist-ssr/
+*.local
+.npm
+.yarn/
+.pnp.*
+.eslintcache
+.parcel-cache
+.next/
+.nuxt/
+.vuepress/dist
+.cache/
+
+# ----------------------------
+# Build & Coverage
+# ----------------------------
+build/
+coverage/
+*.lcov
+.nyc_output/
+
+# ----------------------------
+# Editor & OS
+# ----------------------------
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.history/
+
+# ----------------------------
+# Google Cloud / Firebase
+# ----------------------------
+.firebase/
+firebase-debug.log
+.firebaserc.local
+.gcloud/
+
+# ----------------------------
+# Docker
+# ----------------------------
+.dockerignore
+docker-compose.override.yml
+
+# ----------------------------
+# Logs & Temp
+# ----------------------------
+*.log
+logs/
+tmp/
+temp/
+.tmp/

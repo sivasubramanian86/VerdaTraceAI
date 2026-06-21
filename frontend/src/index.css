@@ -1,0 +1,281 @@
+/* Google Fonts — must be first import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+    /* Perceptually uniform OKLCH color tokens for premium dark mode */
+    --bg-canvas: oklch(12% 0.015 250);
+    --bg-surface: oklch(16% 0.02 250 / 0.25);
+    --bg-surface-2: oklch(20% 0.02 250 / 0.45);
+    --border-subtle: oklch(100% 0 0 / 0.08);
+    --border-focus: oklch(68% 0.18 160);
+    --bg-sidebar: oklch(14% 0.015 250 / 0.35);
+
+    --text-primary: oklch(98% 0.005 250);
+    --text-secondary: oklch(80% 0.015 250);
+    --text-muted: oklch(60% 0.015 250);
+
+    /* Brand accents */
+    --accent-emerald: oklch(68% 0.18 160);
+    --accent-cyan: oklch(68% 0.16 195);
+    --accent-violet: oklch(58% 0.25 295);
+    --accent-amber: oklch(75% 0.19 85);
+    --accent-rose: oklch(65% 0.22 15);
+  }
+
+  /* === LIGHT MODE THEME === */
+  .light-mode {
+    color-scheme: light;
+    --bg-canvas: oklch(97% 0.005 240);
+    --bg-surface: oklch(100% 0 0 / 0.7);
+    --bg-surface-2: oklch(95% 0.01 240 / 0.8);
+    --border-subtle: oklch(0% 0 0 / 0.1);
+    --border-focus: oklch(50% 0.18 160);
+    --bg-sidebar: oklch(100% 0 0 / 0.6);
+
+    --text-primary: oklch(15% 0.01 250);
+    --text-secondary: oklch(35% 0.015 250);
+    --text-muted: oklch(55% 0.015 250);
+  }
+
+  body {
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    min-height: 100dvh;
+    overflow-x: hidden;
+    transition: background-color 0.35s ease, color 0.35s ease;
+  }
+}
+
+/* ========================================================
+   LIGHT MODE: Global overrides for hardcoded Tailwind dark classes
+   Using attribute-contains selectors to match Tailwind generated class names
+   without needing escaped slashes.
+   ======================================================== */
+
+/* --- Background overrides --- */
+.light-mode [class*="bg-slate-9"],
+.light-mode [class*="bg-slate-8"],
+.light-mode [class*="bg-zinc-9"],
+.light-mode [class*="bg-gray-9"],
+.light-mode [class*="bg-neutral-9"] {
+  background-color: oklch(97% 0.008 240 / 0.7) !important;
+}
+
+.light-mode [class*="bg-slate-7"],
+.light-mode [class*="bg-slate-6"] {
+  background-color: oklch(92% 0.01 240) !important;
+}
+
+/* --- Text overrides --- */
+.light-mode [class*="text-slate-1"],
+.light-mode [class*="text-slate-2"],
+.light-mode [class*="text-white"] {
+  color: var(--text-primary) !important;
+}
+
+.light-mode [class*="text-slate-3"],
+.light-mode [class*="text-slate-4"] {
+  color: var(--text-secondary) !important;
+}
+
+.light-mode [class*="text-slate-5"],
+.light-mode [class*="text-slate-6"] {
+  color: var(--text-muted) !important;
+}
+
+/* --- Border overrides --- */
+.light-mode [class*="border-slate-7"],
+.light-mode [class*="border-slate-8"],
+.light-mode [class*="border-slate-9"] {
+  border-color: oklch(0% 0 0 / 0.12) !important;
+}
+
+/* --- Input/select/textarea --- */
+.light-mode input,
+.light-mode select,
+.light-mode textarea {
+  background-color: oklch(100% 0 0 / 0.85) !important;
+  color: var(--text-primary) !important;
+  border-color: oklch(0% 0 0 / 0.15) !important;
+}
+
+.light-mode select option {
+  background-color: #f8fafc !important;
+  color: #1e293b !important;
+}
+
+/* --- Button corrections in light mode --- */
+.light-mode button[class*="bg-slate-8"],
+.light-mode button[class*="bg-slate-9"] {
+  background-color: oklch(92% 0.01 240) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ========================================================
+   GLASSMORPHISM SYSTEM
+   ======================================================== */
+
+.glass-panel {
+  background: var(--bg-surface);
+  backdrop-filter: blur(24px) saturate(170%);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  box-shadow: 
+    inset 0 1px 0 oklch(100% 0 0 / 0.05),
+    0 8px 32px oklch(0% 0 0 / 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel:hover {
+  border-color: oklch(68% 0.18 160 / 0.25);
+  box-shadow: 
+    inset 0 1px 0 oklch(100% 0 0 / 0.08),
+    0 12px 40px oklch(0% 0 0 / 0.3);
+}
+
+/* Glassmorphic Sidebar — adapts to theme via CSS vars */
+.glass-sidebar {
+  background: var(--bg-sidebar);
+  backdrop-filter: blur(32px) saturate(190%);
+  -webkit-backdrop-filter: blur(32px) saturate(190%);
+  border-right: 1px solid var(--border-subtle);
+  box-shadow: 4px 0 40px oklch(0% 0 0 / 0.12);
+}
+
+/* Light mode glass adjustments */
+.light-mode .glass-panel {
+  background: oklch(100% 0 0 / 0.65);
+  border-color: oklch(0% 0 0 / 0.1);
+  box-shadow: 
+    inset 0 1px 0 oklch(100% 0 0 / 0.9),
+    0 4px 20px oklch(0% 0 0 / 0.06),
+    0 1px 4px oklch(0% 0 0 / 0.04);
+}
+
+.light-mode .glass-panel:hover {
+  box-shadow: 
+    inset 0 1px 0 oklch(100% 0 0 / 0.9),
+    0 8px 30px oklch(0% 0 0 / 0.1);
+}
+
+.light-mode .glass-sidebar {
+  background: oklch(100% 0 0 / 0.75);
+  border-right-color: oklch(0% 0 0 / 0.1);
+  box-shadow: 4px 0 30px oklch(0% 0 0 / 0.06);
+}
+
+/* ========================================================
+   ANIMATED MESH BACKGROUND
+   ======================================================== */
+
+@keyframes mesh-drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(-3%, 2%) scale(1.03); }
+  66%  { transform: translate(3%, -2%) scale(0.97); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+.mesh-bg {
+  position: fixed;
+  inset: -20%;
+  z-index: -1;
+  background: 
+    radial-gradient(circle 800px at 10% 20%, oklch(68% 0.18 160 / 0.38) 0%, transparent 70%),
+    radial-gradient(circle 700px at 90% 10%, oklch(58% 0.25 295 / 0.32) 0%, transparent 70%),
+    radial-gradient(circle 900px at 50% 80%, oklch(68% 0.16 195 / 0.28) 0%, transparent 70%);
+  animation: mesh-drift 18s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.light-mode .mesh-bg {
+  background: 
+    radial-gradient(circle 800px at 10% 20%, oklch(68% 0.18 160 / 0.08) 0%, transparent 70%),
+    radial-gradient(circle 700px at 90% 10%, oklch(58% 0.25 295 / 0.06) 0%, transparent 70%),
+    radial-gradient(circle 900px at 50% 80%, oklch(68% 0.16 195 / 0.05) 0%, transparent 70%);
+}
+
+/* ========================================================
+   CUSTOM SCROLLBARS
+   ======================================================== */
+
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--border-subtle); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: oklch(68% 0.18 160 / 0.4); }
+
+/* ========================================================
+   SIDEBAR NAV BUTTON HELPERS
+   ======================================================== */
+
+.sidebar-nav-label {
+  font-size: 0.8125rem;   /* 13px */
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+.sidebar-section-label {
+  font-size: 0.6875rem;   /* 11px */
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ========================================================
+   MICRO-ANIMATION UTILITIES
+   ======================================================== */
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeSlideUp {
+  animation: fadeSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(68% 0.18 160 / 0.4); }
+  50%       { box-shadow: 0 0 0 6px oklch(68% 0.18 160 / 0); }
+}
+
+.animate-pulseGlow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* ========================================================
+   TOOLTIP
+   ======================================================== */
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 110%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: oklch(20% 0.02 250);
+  color: var(--text-primary);
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 99;
+}
+
+[data-tooltip]:hover::after {
+  opacity: 1;
+}

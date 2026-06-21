@@ -1,0 +1,60 @@
+[project]
+name = "verdatraceai"
+version = "1.0.0"
+description = "VerdaTraceAI Carbon Intelligence Copilot"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn>=0.29.0",
+    "pydantic>=2.6.4",
+    "google-cloud-aiplatform>=1.45.0",
+    "sqlalchemy>=2.0.29",
+    "asyncpg>=0.29.0",
+    "pgvector>=0.2.5"
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.9.0",
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "bandit>=1.8.0"
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+exclude = [
+    ".git",
+    ".pytest_cache",
+    ".ruff_cache",
+    "node_modules",
+    "dist",
+    "__pyrefly_virtual__"
+]
+
+[tool.ruff.lint]
+# Enable Google-style docstrings (D), type annotations (ANN), security (S), standard errors (E/W/F), bugbear (B), isort (I)
+select = ["D", "ANN", "S", "E", "W", "F", "B", "I"]
+ignore = [
+    "ANN101", # Missing type annotation for `self`
+    "ANN204", # Redundant type annotations on special methods like __init__
+    "ANN401", # Disallow Any (necessary for dynamic inputs/states)
+    "D100",   # Missing docstring in public module
+    "D102",   # Redundant docstrings on public inherited/endpoint overrides
+    "D104",   # Missing docstring in public package
+    "D107"    # Missing docstring in __init__
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/*" = ["S101", "D", "ANN"] # Allow assert in tests, ignore docstrings/annotations
+"tests/*" = ["S101", "D", "ANN"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "strict"
+pythonpath = ["."]
+
+

@@ -1,0 +1,67 @@
+{
+  "name": "verdatrace-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for VerdaTraceAI Carbon Intelligence Copilot",
+  "tools": [
+    {
+      "name": "get_project_emissions",
+      "description": "Fetch time-series emission data for a specific project.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": { "type": "string", "description": "The ID of the project" },
+          "period": { "type": "string", "description": "Period e.g., '30d', '7d'" }
+        },
+        "required": ["project_id"]
+      }
+    },
+    {
+      "name": "get_recommendations",
+      "description": "Fetch active carbon reduction optimizations for a project.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": { "type": "string", "description": "The ID of the project" }
+        },
+        "required": ["project_id"]
+      }
+    },
+    {
+      "name": "get_usage_snapshots",
+      "description": "Fetch raw usage metrics for a project.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": { "type": "string", "description": "The ID of the project" }
+        },
+        "required": ["project_id"]
+      }
+    }
+  ],
+  "resources": [
+    {
+      "name": "emission_logs",
+      "type": "database_table",
+      "description": "Log of all emission calculations."
+    },
+    {
+      "name": "sustainability_guidelines",
+      "type": "document_collection",
+      "description": "Collection of carbon footprint docs."
+    }
+  ],
+  "prompts": [
+    {
+      "name": "GenerateJudgeSummary",
+      "description": "Creates a 4-paragraph pitch for PromptWars judges.",
+      "arguments": [
+        { "name": "workspace_id", "description": "The active workspace ID", "required": true }
+      ]
+    },
+    {
+      "name": "GenerateGreenArchitectureSummary",
+      "description": "Summarizes ADK + RAG sustainability impact.",
+      "arguments": []
+    }
+  ]
+}

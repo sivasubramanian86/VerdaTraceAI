@@ -1,0 +1,12 @@
+fastapi==0.110.1
+uvicorn==0.29.0
+pydantic==2.6.4
+google-cloud-aiplatform==1.45.0
+# Add ADK if available publicly, else placeholder
+# google-adk==0.1.0 
+langchain==0.1.13
+pgvector==0.2.5
+sqlalchemy==2.0.29
+asyncpg==0.29.0
+python-dotenv==1.0.1
+
