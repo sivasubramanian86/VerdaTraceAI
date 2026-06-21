@@ -468,18 +468,19 @@ def test_llm_service_get_model_exceptions() -> None:
             raise RuntimeError("Primary model not found")
         return f"GenerativeModel-{name}"
 
-    with patch("app.services.llm_service.GenerativeModel", side_effect=mock_generative_model):
-        model = service._get_model("primary", "fallback")
-        assert model == "GenerativeModel-fallback"
+    with patch("app.services.llm_service.GenerationConfig", return_value=MagicMock()):
+        with patch("app.services.llm_service.GenerativeModel", side_effect=mock_generative_model):
+            model = service._get_model("primary", "fallback")
+            assert model == "GenerativeModel-fallback"
 
-    # 2. Both failure, returns AgnosticModel
-    def mock_both_fail(name, generation_config=None):
-        raise RuntimeError("No model available")
+        # 2. Both failure, returns AgnosticModel
+        def mock_both_fail(name, generation_config=None):
+            raise RuntimeError("No model available")
 
-    with patch("app.services.llm_service.GenerativeModel", side_effect=mock_both_fail):
-        model = service._get_model("primary", "fallback")
-        assert isinstance(model, AgnosticModel)
-        assert model.model_name == "primary"
+        with patch("app.services.llm_service.GenerativeModel", side_effect=mock_both_fail):
+            model = service._get_model("primary", "fallback")
+            assert isinstance(model, AgnosticModel)
+            assert model.model_name == "primary"
 
 
 def test_llm_service_override_model() -> None:
