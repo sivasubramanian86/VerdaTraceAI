@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Mail, Database, Image, Sparkles, CheckCircle, RefreshCw, Trash2 } from 'lucide-react';
 import { translations } from '../i18n/translations';
+import { API_BASE_URL } from '../config';
 
 interface DigitalFootprintViewProps {
   locale: string;
@@ -13,7 +14,7 @@ export const DigitalFootprintView: React.FC<DigitalFootprintViewProps> = ({ loca
 
   const fetchDigitalMetrics = () => {
     setLoading(true);
-    fetch('http://localhost:8000/api/v1/loops/digital')
+    fetch(`${API_BASE_URL}/api/v1/loops/digital`)
       .then((res) => res.json())
       .then((resData) => {
         setData(resData);
@@ -58,7 +59,7 @@ export const DigitalFootprintView: React.FC<DigitalFootprintViewProps> = ({ loca
   const handleCompleteMission = async (missionId: string) => {
     setActionMsg('Processing cleanup mission...');
     try {
-      const res = await fetch(`http://localhost:8000/api/v1/loops/digital/mission/${missionId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/v1/loops/digital/mission/${missionId}`, {
         method: 'POST'
       });
       const resData = await res.json();

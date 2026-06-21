@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Share2, Users, PlusCircle, ShieldAlert, RefreshCw } from 'lucide-react';
 import { translations } from '../i18n/translations';
+import { API_BASE_URL } from '../config';
 
 interface CircularEconomyViewProps {
   locale: string;
@@ -16,7 +17,7 @@ export const CircularEconomyView: React.FC<CircularEconomyViewProps> = ({ locale
 
   const fetchCircularItems = () => {
     setLoading(true);
-    fetch('http://localhost:8000/api/v1/loops/circular')
+    fetch(`${API_BASE_URL}/api/v1/loops/circular`)
       .then(res => res.json())
       .then(data => {
         setItems(data.items || []);
@@ -44,7 +45,7 @@ export const CircularEconomyView: React.FC<CircularEconomyViewProps> = ({ locale
 
     setMsg('Registering circular sharing transaction...');
     try {
-      const res = await fetch('http://localhost:8000/api/v1/loops/circular', {
+      const res = await fetch(`${API_BASE_URL}/api/v1/loops/circular`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ item_name: itemName, owner: owner, action: action })
@@ -82,7 +83,7 @@ export const CircularEconomyView: React.FC<CircularEconomyViewProps> = ({ locale
   const handleBorrowItem = async (itemId: string, name: string) => {
     setMsg(`Borrowing ${name} from neighborhood pool...`);
     try {
-      await fetch('http://localhost:8000/api/v1/loops/circular', {
+      await fetch(`${API_BASE_URL}/api/v1/loops/circular`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ item_name: name, action: "borrow" })

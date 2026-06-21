@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Utensils, Compass, Sparkles, RefreshCw, AlertCircle, ShoppingCart, CheckCircle2 } from 'lucide-react';
 import { translations } from '../i18n/translations';
+import { API_BASE_URL } from '../config';
 
 interface FoodMilesViewProps {
   locale: string;
@@ -15,7 +16,7 @@ export const FoodMilesView: React.FC<FoodMilesViewProps> = ({ locale }) => {
 
   const fetchFoods = () => {
     setLoading(true);
-    fetch('http://localhost:8000/api/v1/loops/food')
+    fetch(`${API_BASE_URL}/api/v1/loops/food`)
       .then(res => res.json())
       .then(data => {
         setFoods(data.foods || []);
@@ -42,7 +43,7 @@ export const FoodMilesView: React.FC<FoodMilesViewProps> = ({ locale }) => {
 
     setMsg('Analyzing food origin coordinates and logistics...');
     try {
-      const res = await fetch('http://localhost:8000/api/v1/loops/food/scan', {
+      const res = await fetch(`${API_BASE_URL}/api/v1/loops/food/scan`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ product_name: productName, origin: origin })

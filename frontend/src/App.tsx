@@ -11,6 +11,7 @@ import { LocalCommerceView } from './components/LocalCommerceView';
 import { FoodMilesView } from './components/FoodMilesView';
 import { TransitInfraView } from './components/TransitInfraView';
 import { CircularEconomyView } from './components/CircularEconomyView';
+import { API_BASE_URL } from './config';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -66,7 +67,7 @@ function App() {
   useEffect(() => {
     if (activeTab === 'dashboard' && !emissionsData) {
       setLoadingDashboard(true);
-      fetch('http://localhost:8000/api/v1/projects/proj_123/emissions')
+      fetch(`${API_BASE_URL}/api/v1/projects/proj_123/emissions`)
         .then(res => res.json())
         .then(data => {
           setEmissionsData(data);
@@ -104,7 +105,7 @@ function App() {
     setChatLoading(true);
 
     try {
-      const res = await fetch('http://localhost:8000/api/v1/chat', {
+      const res = await fetch(`${API_BASE_URL}/api/v1/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -140,7 +141,7 @@ function App() {
   const triggerJudgeSummary = async () => {
     setLoadingJudgeSummary(true);
     try {
-      const res = await fetch('http://localhost:8000/api/v1/mcp/prompt/GenerateJudgeSummary?workspace_id=ws_promptwars_3');
+      const res = await fetch(`${API_BASE_URL}/api/v1/mcp/prompt/GenerateJudgeSummary?workspace_id=ws_promptwars_3`);
       const data = await res.json();
       setJudgeSummary(data.prompt);
     } catch (err) {

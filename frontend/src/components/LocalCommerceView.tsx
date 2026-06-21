@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ShoppingBag, Landmark, PlusCircle, CheckCircle2, AlertCircle, RefreshCw } from 'lucide-react';
 import { translations } from '../i18n/translations';
+import { API_BASE_URL } from '../config';
 
 interface LocalCommerceViewProps {
   locale: string;
@@ -16,7 +17,7 @@ export const LocalCommerceView: React.FC<LocalCommerceViewProps> = ({ locale }) 
 
   const fetchTransactions = () => {
     setLoading(true);
-    fetch('http://localhost:8000/api/v1/loops/commerce')
+    fetch(`${API_BASE_URL}/api/v1/loops/commerce`)
       .then(res => res.json())
       .then(data => {
         setTxs(data.transactions || []);
@@ -43,7 +44,7 @@ export const LocalCommerceView: React.FC<LocalCommerceViewProps> = ({ locale }) 
 
     setMsg('Logging local transaction...');
     try {
-      const res = await fetch('http://localhost:8000/api/v1/loops/commerce', {
+      const res = await fetch(`${API_BASE_URL}/api/v1/loops/commerce`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

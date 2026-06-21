@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Clock, Database, Sparkles, RefreshCw } from 'lucide-react';
 import { translations, getRegionLabel, getModelLabel, getProviderLabel } from '../i18n/translations';
+import { API_BASE_URL } from '../config';
 
 const PROVIDER_REGIONS: Record<string, { value: string; label: string }[]> = {
   gcp: [
@@ -143,7 +144,7 @@ export const SimulatorView: React.FC<SimulatorViewProps> = ({
     setParsing(true);
     setParseMsg('');
     try {
-      const res = await fetch('http://localhost:8000/api/v1/ingest/unstructured', {
+      const res = await fetch(`${API_BASE_URL}/api/v1/ingest/unstructured`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ unstructured_text: unstructuredText })

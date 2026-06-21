@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Car, MapPin, Send, RefreshCw } from 'lucide-react';
 import { translations } from '../i18n/translations';
+import { API_BASE_URL } from '../config';
 
 interface TransitInfraViewProps {
   locale: string;
@@ -22,7 +23,7 @@ export const TransitInfraView: React.FC<TransitInfraViewProps> = ({ locale }) =>
 
   const fetchTransitData = () => {
     setLoading(true);
-    fetch('http://localhost:8000/api/v1/loops/transit')
+    fetch(`${API_BASE_URL}/api/v1/loops/transit`)
       .then(res => res.json())
       .then(data => {
         setTrips(data.trips || []);
@@ -54,7 +55,7 @@ export const TransitInfraView: React.FC<TransitInfraViewProps> = ({ locale }) =>
 
     setMsg('Logging green transit trip...');
     try {
-      const res = await fetch('http://localhost:8000/api/v1/loops/transit', {
+      const res = await fetch(`${API_BASE_URL}/api/v1/loops/transit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mode: mode, distance_km: parseFloat(distance) })
@@ -105,7 +106,7 @@ export const TransitInfraView: React.FC<TransitInfraViewProps> = ({ locale }) =>
 
     setMsg('Submitting crowdsourced feedback...');
     try {
-      const res = await fetch('http://localhost:8000/api/v1/loops/transit/feedback', {
+      const res = await fetch(`${API_BASE_URL}/api/v1/loops/transit/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
