@@ -1,4 +1,3 @@
-/* v8 ignore start */
 import React, { useState } from 'react';
 import { MessageSquare, Send, Image, FileAudio, FileVideo, X, Sparkles, Mic } from 'lucide-react';
 import { translations } from '../i18n/translations';
@@ -168,4 +167,3 @@ export const CopilotView: React.FC<CopilotViewProps> = ({
   );
 };
 
-/* v8 ignore stop */

@@ -1,4 +1,3 @@
-/* v8 ignore start */
 import React, { useEffect, useState } from 'react';
 import { ShoppingBag, Landmark, PlusCircle, CheckCircle2, AlertCircle, RefreshCw } from 'lucide-react';
 import { translations } from '../i18n/translations';
@@ -223,4 +222,3 @@ export const LocalCommerceView: React.FC<LocalCommerceViewProps> = ({ locale }) 
   );
 };
 
-/* v8 ignore stop */

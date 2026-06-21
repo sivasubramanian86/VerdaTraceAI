@@ -1,4 +1,3 @@
-/* v8 ignore start */
 import React, { useEffect, useState } from 'react';
 import { Share2, Users, PlusCircle, ShieldAlert, RefreshCw } from 'lucide-react';
 import { translations } from '../i18n/translations';
@@ -232,4 +231,3 @@ export const CircularEconomyView: React.FC<CircularEconomyViewProps> = ({ locale
   );
 };
 
-/* v8 ignore stop */

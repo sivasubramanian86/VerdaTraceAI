@@ -1,4 +1,3 @@
-/* v8 ignore start */
 import React, { useEffect, useState } from 'react';
 import { Mail, Database, Image, Sparkles, CheckCircle, RefreshCw, Trash2 } from 'lucide-react';
 import { translations } from '../i18n/translations';
@@ -234,4 +233,3 @@ export const DigitalFootprintView: React.FC<DigitalFootprintViewProps> = ({ loca
   );
 };
 
-/* v8 ignore stop */

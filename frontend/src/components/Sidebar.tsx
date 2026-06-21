@@ -1,4 +1,3 @@
-/* v8 ignore start */
 import React from 'react';
 import { 
   Leaf, Activity, Zap, MessageSquare, Eye, Sparkles, Sun, Moon, Globe,
@@ -364,4 +363,3 @@ export const Sidebar: React.FC<SidebarProps> = ({
   );
 };
 
-/* v8 ignore stop */

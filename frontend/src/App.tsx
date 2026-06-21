@@ -1,4 +1,3 @@
-/* v8 ignore start */
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { DashboardView } from './components/DashboardView';
@@ -324,4 +323,3 @@ function App() {
 
 export default App;
 
-/* v8 ignore stop */

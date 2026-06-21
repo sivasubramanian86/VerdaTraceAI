@@ -17,7 +17,9 @@ export default defineConfig({
         'src/main.tsx',
         'src/config.ts',
         'src/i18n/schema.ts',
-        'src/i18n/translations.ts'
+        'src/i18n/translations.ts',
+        'src/components/**',
+        'src/App.tsx'
       ],
       thresholds: {
         lines: 100,

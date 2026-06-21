@@ -1,4 +1,3 @@
-/* v8 ignore start */
 import React, { useEffect, useState } from 'react';
 import { Utensils, Compass, Sparkles, RefreshCw, AlertCircle, ShoppingCart, CheckCircle2 } from 'lucide-react';
 import { translations } from '../i18n/translations';
@@ -238,4 +237,3 @@ export const FoodMilesView: React.FC<FoodMilesViewProps> = ({ locale }) => {
   );
 };
 
-/* v8 ignore stop */

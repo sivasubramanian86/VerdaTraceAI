@@ -1,4 +1,3 @@
-/* v8 ignore start */
 import React, { useEffect, useState } from 'react';
 import { Clock, Database, Sparkles, RefreshCw } from 'lucide-react';
 import { translations, getRegionLabel, getModelLabel, getProviderLabel } from '../i18n/translations';
@@ -457,4 +456,3 @@ export const SimulatorView: React.FC<SimulatorViewProps> = ({
   );
 };
 
-/* v8 ignore stop */
