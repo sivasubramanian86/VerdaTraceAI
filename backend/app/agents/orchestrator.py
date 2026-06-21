@@ -80,6 +80,21 @@ class OrchestratorAgent(CoordinatorAgent):
         )
 
     async def route(self, inputs: Dict[str, Any], session: SessionState) -> str:
+        """Route the user request parameters to the corresponding specialist agent.
+
+        Determines which agent in the mesh should execute based on the target intent
+        specified in the inputs.
+
+        Args:
+            inputs: Dictionary containing:
+                - intent (str): The target execution intent matching one of the keys in
+                  routes (e.g. "onboard", "analyze", "chat", "lifestyle", etc.).
+                  Defaults to "analyze".
+            session: The shared session state instance.
+
+        Returns:
+            The intent string mapping to a registered sub-agent route.
+        """
         intent = inputs.get("intent", "analyze")
         if intent in self.routes:
             return intent

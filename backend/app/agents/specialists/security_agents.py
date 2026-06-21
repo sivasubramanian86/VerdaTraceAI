@@ -13,6 +13,20 @@ class EvalAndGuardrailAgent(SequentialAgent):
         super().__init__("EvalAndGuardrailAgent", "Validates output quality and logs leaderboard metrics.")
 
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
+        """Runs validation checks and security guardrails on user-generated text.
+
+        Args:
+            inputs: Dictionary containing:
+                - text (str): The output content or text query to evaluate.
+            session: Shared session state used to record the guardrail status under the
+                "last_guardrail_status" key.
+
+        Returns:
+            A dictionary containing:
+                - status (str): Verification status ("safe" or "flagged").
+                - safety_checked (bool): True if safety evaluation completed successfully.
+                - metrics (dict): Guardrail violation flags and evaluation safety scores.
+        """
         text_to_validate = inputs.get("text", "")
 
         # Guardrail logic (check for hallucinated cloud providers)

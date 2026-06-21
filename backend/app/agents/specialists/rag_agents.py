@@ -15,6 +15,18 @@ class AgenticRAGExplainerAgent(SequentialAgent):
         super().__init__("AgenticRAGExplainerAgent", "Explains sustainability concepts using Gemini Pro and Context.")
 
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
+        """Provides explanatory sustainable recommendation details using LLM-RAG context.
+
+        Args:
+            inputs: Dictionary containing:
+                - query (str): Conversational query regarding carbon optimizations or region comparisons.
+                  Defaults to "Why is europe-west4 greener?".
+            session: Shared session state.
+
+        Returns:
+            A dictionary containing:
+                - explanation (str): Science-based optimization explanations derived from the RAG context.
+        """
         model = llm_service.get_pro_model()
         query = inputs.get("query", "Why is europe-west4 greener?")
 
@@ -58,6 +70,17 @@ class GreenCopilotChatAgent(SequentialAgent):
         super().__init__("GreenCopilotChatAgent", "Combines metrics, RAG, and user query.")
 
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
+        """Deliver user-facing copilot chat with contextual carbon metrics.
+
+        Args:
+            inputs: Dictionary containing:
+                - query (str): User conversational query.
+            session: Shared session state used to retrieve latest emission metrics.
+
+        Returns:
+            A dictionary containing:
+                - response (str): Copilot's response helping reduce AI footprint.
+        """
         query = inputs.get("query", "")
         latest_emission = session.get("latest_emission", {})
 
@@ -84,6 +107,16 @@ class MCPDataConnectorAgent(SequentialAgent):
         super().__init__("MCPDataConnectorAgent", "Connects to MCP schema registries and datasets.")
 
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
+        """Bridges agent mesh with external datasets/schemas via Model Context Protocol.
+
+        Args:
+            inputs: Dictionary containing:
+                - tool_name (str): Target MCP tool name to call (e.g. "get_project_emissions").
+            session: Shared session state.
+
+        Returns:
+            A dictionary containing the tool output payload, including status indicators.
+        """
         tool_name = inputs.get("tool_name", "get_project_emissions")
         # Direct simulation of MCP Toolbox Server calls
         if tool_name == "get_project_emissions":

@@ -511,14 +511,19 @@ async def complete_digital_mission(mission_id: str) -> dict:
                 local_loops_db["digital"]["duplicate_media_count"] = max(
                     0, local_loops_db["digital"]["duplicate_media_count"] - 15
                 )
-            # Recompute CO2
-            co2_g = (
-                (local_loops_db["digital"]["emails_count"] * 0.01)
-                + (local_loops_db["digital"]["cloud_storage_gb"] * 0.2)
-                + (local_loops_db["digital"]["duplicate_media_count"] * 1.0)
-                + (local_loops_db["digital"]["ai_usage_count"] * 2.0)
+            # Recompute CO2 by executing DigitalWasteAgent via OrchestratorAgent
+            session = SessionState()
+            calc_result = await orchestrator.execute(
+                {
+                    "intent": "digital_clean",
+                    "emails_count": local_loops_db["digital"]["emails_count"],
+                    "cloud_storage_gb": local_loops_db["digital"]["cloud_storage_gb"],
+                    "duplicate_media_count": local_loops_db["digital"]["duplicate_media_count"],
+                    "ai_usage_count": local_loops_db["digital"]["ai_usage_count"],
+                },
+                session,
             )
-            local_loops_db["digital"]["digital_co2e_kg"] = round(co2_g / 1000.0, 4)
+            local_loops_db["digital"]["digital_co2e_kg"] = calc_result["digital_co2e_kg"]
             return {"status": "success", "credits_earned": earned, "updated_digital": local_loops_db["digital"]}
     return {"status": "error", "message": "Mission not found"}
 

@@ -119,6 +119,25 @@ class Scope3UnstructuredIngestAgent(SequentialAgent):
         super().__init__("Scope3UnstructuredIngestAgent", "Parses raw supplier reports into structured telemetry.")
 
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
+        """Parses unstructured text reports (invoices, emails) into structured telemetry.
+
+        Args:
+            inputs: Dictionary containing:
+                - unstructured_text (str): The raw text content of the supplier report or invoice.
+            session: Shared session state used to cache the parsed result under the
+                "latest_unstructured_extraction" key.
+
+        Returns:
+            A dictionary containing:
+                - provider (str): Extracted or mapped cloud provider ("gcp", "aws", "azure", "onprem").
+                - region (str): Extracted cloud region.
+                - model_family (str): Extracted machine learning model family.
+                - calls (int): Parsed monthly API call count.
+                - prompt_tokens (int): Parsed average prompt token count.
+                - completion_tokens (int): Parsed completion token count.
+                - caching_enabled (bool): Whether context caching was detected.
+                - audit_hash (str): SHA-256 hash receipt for validation and compliance auditing.
+        """
         text = inputs.get("unstructured_text", "")
 
         # Default fallback values
@@ -405,6 +424,23 @@ class FoodMileAgent(SequentialAgent):
         super().__init__("FoodMileAgent", "Tracks food miles origin and suggests nutritious local alternatives.")
 
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
+        """Estimates food transportation emissions and recommends regional swaps.
+
+        Args:
+            inputs: Dictionary containing:
+                - product_name (str): Food product label. Defaults to "Apple".
+                - origin (str): Origin location label. Defaults to "California".
+            session: Shared session state.
+
+        Returns:
+            A dictionary containing:
+                - product_name (str): Echo of food product name.
+                - origin (str): Echo of origin.
+                - distance_km (float): Estimated distance traveled in km.
+                - transport_co2e_kg (float): Transport carbon footprint in kg CO2e.
+                - local_swap (str | None): Suggested Karnataka-first equivalent food swap.
+                - is_local (bool): Whether the item origin is local to Karnataka/India.
+        """
         product_name = inputs.get("product_name", "Apple")
         origin = inputs.get("origin", "California")
 
@@ -448,6 +484,23 @@ class TransitGamifierAgent(SequentialAgent):
         super().__init__("TransitGamifierAgent", "Estimates transport footprint and awards eco-badges.")
 
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
+        """Estimates transport carbon savings and awards credits.
+
+        Args:
+            inputs: Dictionary containing:
+                - mode (str): Mobility transport mode (e.g. "Metro", "Walking", "Cycling").
+                  Defaults to "Metro".
+                - distance_km (float): Commute trip distance in km. Defaults to 0.0.
+            session: Shared session state used to record the transaction to the
+                "credits_ledger" list.
+
+        Returns:
+            A dictionary containing:
+                - mode (str): Transport mode.
+                - distance_km (float): Distance traveled.
+                - co2e_saved_kg (float): Avoided CO2e emissions in kg compared to gasoline baseline.
+                - credits_earned (int): Carbon credits rewarded.
+        """
         mode = inputs.get("mode", "Metro")  # Metro, EV Bus, Walking, Cycling, Cab
         distance_km = inputs.get("distance_km", 0.0)
 
@@ -492,6 +545,23 @@ class InfraFeedbackAgent(SequentialAgent):
         super().__init__("InfraFeedbackAgent", "Aggregates crowdsourced urban gaps like EV chargers or bike lanes.")
 
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
+        """Registers and aggregates crowdsourced sustainability feedback reports.
+
+        Args:
+            inputs: Dictionary containing:
+                - description (str): Details of the infrastructure gap.
+                - latitude (float): Latitude coordinates.
+                - longitude (float): Longitude coordinates.
+                - issue_type (str): Category of infrastructure issue.
+            session: Shared session state.
+
+        Returns:
+            A dictionary containing:
+                - status (str): Operation success status.
+                - feedback (dict): Recorded feedback payload.
+                - cluster_message (str): Hotspot cluster aggregation message.
+                - total_reports (int): Running total of recorded feedbacks.
+        """
         description = inputs.get("description", "")
         latitude = inputs.get("latitude", 12.9716)
         longitude = inputs.get("longitude", 77.5946)
@@ -533,6 +603,23 @@ class CircularEconomyAgent(SequentialAgent):
         )
 
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
+        """Manages circular economy item sharing and calculates manufacturing offsets.
+
+        Args:
+            inputs: Dictionary containing:
+                - item_name (str): Name of the shared item/tool. Defaults to "Drill".
+                - owner (str): Owner name. Defaults to "Neighbor".
+                - action (str): Lend/borrow action type ("lend" or "borrow"). Defaults to "lend".
+            session: Shared session state.
+
+        Returns:
+            A dictionary containing:
+                - item_name (str): Shared item.
+                - owner (str): Item owner.
+                - action (str): Action type.
+                - embedded_co2e_saved_kg (float): Avoided manufacturing embedded footprint in kg.
+                - credits_earned (int): Reward points awarded.
+        """
         item_name = inputs.get("item_name", "Drill")
         owner = inputs.get("owner", "Neighbor")
         action = inputs.get("action", "lend")  # lend or borrow
@@ -572,6 +659,19 @@ class PartnerIntegrationAgent(SequentialAgent):
         super().__init__("PartnerIntegrationAgent", "B2B2C API partner routing for cart emissions and green swaps.")
 
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
+        """Aggregates cart emissions and maps green offsets for checkout APIs.
+
+        Args:
+            inputs: Dictionary containing:
+                - cart_items (list[dict]): Checkout items with name, price, and origin.
+            session: Shared session state.
+
+        Returns:
+            A dictionary containing:
+                - total_co2e_kg (float): Combined checkout carbon footprint.
+                - swaps (list[dict]): Recommended local Karnataka replacements with discounts.
+                - potential_credits (int): Estimations of earnable credits.
+        """
         cart_items = inputs.get("cart_items", [])
 
         total_co2e_kg = 0.0
@@ -610,6 +710,22 @@ class MultimodalIngestionAgent(SequentialAgent):
         super().__init__("MultimodalIngestionAgent", "Parses audio or image files into clean text indicators.")
 
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
+        """Ingests and transcribes multimodal files into standardized telemetry indicators.
+
+        Args:
+            inputs: Dictionary containing:
+                - media_type (str): Type of media ("text", "audio", "image").
+                - mock_transcript (str): Pre-transcribed text (for testing/audio).
+                - image_type (str): Type of image ("receipt", "label", "map").
+                - media_duration_sec (float): Duration of audio/video.
+            session: Shared session state.
+
+        Returns:
+            A dictionary containing:
+                - media_type (str): Echo of media type.
+                - extracted_text (str): Standardized text output from OCR or transcript.
+                - metadata (dict): Dynamic properties matching the file context.
+        """
         media_type = inputs.get("media_type", "text")
 
         text_result = ""
@@ -643,6 +759,20 @@ class LocalizationAndNarrationAgent(SequentialAgent):
         super().__init__("LocalizationAndNarrationAgent", "Provides Kannada, Hindi, and Tamil support.")
 
     async def _run(self, inputs: Dict[str, Any], session: SessionState) -> Dict[str, Any]:
+        """Provides Indian languages translations and voice summaries.
+
+        Args:
+            inputs: Dictionary containing:
+                - target_lang (str): Target locale language code (e.g. "kn", "hi", "ta", "en").
+            session: Shared session state.
+
+        Returns:
+            A dictionary containing:
+                - target_lang (str): Echo of the target language.
+                - language_package (dict): Translated greeting, carbon text, and recommendation.
+                - translated_text (str): Concatenated TTS audio summary text.
+                - tts_audio_url (str): Absolute endpoint to fetch synthesized audio files.
+        """
         target_lang = inputs.get("target_lang", "en")
 
         # Localized greetings and summaries dictionary stubs
