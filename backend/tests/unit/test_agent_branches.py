@@ -1,13 +1,14 @@
 import pytest
+
 from app.agents.adk_core import SessionState
 from app.agents.specialists import (
-    ProjectOnboardingAgent,
-    CarbonEstimationAgent,
-    OptimizationStrategyAgent,
     AgenticRAGExplainerAgent,
+    CarbonEstimationAgent,
     GreenCopilotChatAgent,
+    LocalizationAndNarrationAgent,
     MCPDataConnectorAgent,
-    LocalizationAndNarrationAgent
+    OptimizationStrategyAgent,
+    ProjectOnboardingAgent,
 )
 from app.services.llm_service import llm_service
 
@@ -51,7 +52,7 @@ async def test_carbon_estimation_multimodal_branches() -> None:
 async def test_optimization_strategy_stub_fallbacks() -> None:
     """Test OptimizationStrategyAgent under different cloud providers to hit stub recommendations."""
     agent = OptimizationStrategyAgent()
-    
+
     session_aws = SessionState()
     result_aws = await agent.execute({"provider": "aws", "region": "us-east-1"}, session_aws)
     assert any("europe-west4" in rec or "us-west-2" in rec for rec in result_aws["recommendations"])
@@ -78,7 +79,7 @@ async def test_agentic_rag_explainer_agent_stub() -> None:
 async def test_green_copilot_chat_agent_multimodal() -> None:
     """Test GreenCopilotChatAgent with different media attachment queries."""
     agent = GreenCopilotChatAgent()
-    
+
     # Text only
     session_text = SessionState()
     res_text = await agent.execute({"query": "sustainability comparison"}, session_text)
@@ -96,7 +97,7 @@ async def test_mcp_data_connector_agent_scenarios() -> None:
     """Test MCPDataConnectorAgent tool mappings."""
     agent = MCPDataConnectorAgent()
     session = SessionState()
-    
+
     # Test valid tool
     res_valid = await agent.execute({"tool_name": "get_project_emissions"}, session)
     assert res_valid["status"] == "mcp_ok"

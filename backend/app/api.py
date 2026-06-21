@@ -27,7 +27,11 @@ class ChatRequest(BaseModel):
     provider: str = Field("gcp", pattern="^(gcp|aws|azure|onprem)$", description="Cloud provider")
     region: str = Field("us-central1", min_length=2, max_length=30, description="Cloud region")
     model_family: str = Field("gemini-2.5-flash", min_length=2, max_length=50, description="Model family")
-    media_type: str = Field("text", pattern="^(text|image|audio|video)$", description="Media type for multimodal context")
+    media_type: str = Field(
+        "text",
+        pattern="^(text|image|audio|video)$",
+        description="Media type for multimodal context",
+    )
     media_count: int = Field(0, ge=0, le=100, description="Media count")
     media_duration_sec: float = Field(0.0, ge=0.0, le=3600.0, description="Media duration in seconds")
 

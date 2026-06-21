@@ -18,7 +18,6 @@ import pytest
 from app.agents.adk_core import SessionState
 from app.agents.specialists import CarbonEstimationAgent
 
-
 # ---------------------------------------------------------------------------
 # Property 1 — Formula Invariance (Req 5.1)
 # Fixed combos: runtime_ms=5000, execution_hour=12

@@ -1,6 +1,5 @@
 import asyncio
 import logging
-from typing import Any, Dict
 
 from app.agents.adk_core import SessionState
 from app.agents.orchestrator import orchestrator
@@ -48,7 +47,7 @@ async def run_evals() -> bool:
         })
 
         result = await orchestrator.execute({"intent": "chat", "query": tc["query"]}, session)
-        
+
         # Verify JSON structure stability
         if not isinstance(result, dict) or "response" not in result:
             logger.error(f"❌ FAIL: Response JSON structure unstable. Result: {result}")
@@ -116,7 +115,7 @@ async def run_evals() -> bool:
         return False
 
     logger.info("✅ PASS: Emissions calculations and Green Score boundaries validated.")
-    
+
     total_passed = passed == len(test_cases)
     logger.info(f"Evals Complete: {passed}/{len(test_cases)} chat cases passed. Total status: {total_passed}")
     return total_passed

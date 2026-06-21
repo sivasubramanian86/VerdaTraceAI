@@ -12,9 +12,8 @@ Covers:
 
 import pytest
 
-from app.agents.adk_core import SessionState, SequentialAgent
+from app.agents.adk_core import SequentialAgent, SessionState
 from app.exceptions import VerdaTraceException
-
 
 # ---------------------------------------------------------------------------
 # Section 1 — VerdaTraceException hierarchy

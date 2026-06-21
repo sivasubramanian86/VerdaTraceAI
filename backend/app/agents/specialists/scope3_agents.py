@@ -650,12 +650,23 @@ class LocalizationAndNarrationAgent(SequentialAgent):
             "kn": {
                 "greeting": "\u0ca8\u0cae\u0cb8\u0ccd\u0c95\u0cbe\u0cb0, \u0ca8\u0cbe\u0ca8\u0cc1 VerdaTrace Copilot.",
                 "carbon_saving": "\u0ca8\u0cbf\u0cae\u0ccd\u0cae CO2 \u0c89\u0cb3\u0cbf\u0ca4\u0cbe\u0caf: {value} kg.",
-                "recommendation": "\u0ca8\u0cbf\u0cae\u0ccd\u0cae \u0cae\u0cbe\u0ca6\u0cb0\u0cbf\u0caf\u0ca8\u0ccd\u0ca8\u0cc1 europe-west4 \u0c97\u0cc6 \u0cb5\u0cb0\u0ccd\u0c97\u0cbe\u0caf\u0cbf\u0cb8\u0cbf.",
+                "recommendation": (
+                    "\u0ca8\u0cbf\u0cae\u0ccd\u0cae \u0cae\u0cbe\u0ca6\u0cb0\u0cbf\u0caf\u0ca8\u0ccd\u0ca8\u0cc1 "
+                    "europe-west4 \u0c97\u0cc6 \u0cb5\u0cb0\u0ccd\u0c97\u0cbe\u0caf\u0cbf\u0cb8\u0cbf."
+                ),
             },
             "hi": {
-                "greeting": "\u0928\u092e\u0938\u094d\u0924\u0947, \u092e\u0948\u0902 VerdaTrace Copilot \u0939\u0942\u0902.",
+                "greeting": (
+                    "\u0928\u092e\u0938\u094d\u0924\u0947, \u092e\u0948\u0902 "
+                    "VerdaTrace Copilot \u0939\u0942\u0902."
+                ),
                 "carbon_saving": "\u0906\u092a\u0915\u0940 CO2 \u092c\u091a\u0924: {value} kg.",
-                "recommendation": "\u0905\u092a\u0928\u0947 \u092e\u0949\u0921\u0932 \u0915\u094b europe-west4 \u092a\u0930 \u0938\u094d\u0925\u093e\u0928\u093e\u0902\u0924\u0930\u093f\u0924 \u0915\u0930\u0947\u0902.",
+                "recommendation": (
+                    "\u0905\u092a\u0928\u0947 \u092e\u0949\u0921\u0932 \u0915\u094b "
+                    "europe-west4 "
+                    "\u092a\u0930 \u0938\u094d\u0925\u093e\u0928\u093e\u0902"
+                    "\u0924\u0930\u093f\u0924 \u0915\u0930\u0947\u0902."
+                ),
             },
             "ta": {
                 "greeting": "Vanakkam, I am VerdaTrace Copilot.",

@@ -1,10 +1,10 @@
-import pytest
-from app.services.llm_service import AgnosticModel, LLMService, llm_service
+from app.services.llm_service import AgnosticModel, LLMService
+
 
 def test_agnostic_model_languages() -> None:
     """Test AgnosticModel translations and prompt patterns."""
     model = AgnosticModel("openai", "gpt-4o")
-    
+
     # 1. Actionable steps prompts
     p_en = "give me actionable steps for carbon reduction"
     res_en = model.generate_content(p_en)

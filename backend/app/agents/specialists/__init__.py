@@ -11,7 +11,6 @@ from .rag_agents import (
     GreenCopilotChatAgent,
     MCPDataConnectorAgent,
 )
-from .security_agents import EvalAndGuardrailAgent
 from .scope3_agents import (
     CircularEconomyAgent,
     DigitalWasteAgent,
@@ -25,6 +24,7 @@ from .scope3_agents import (
     Scope3UnstructuredIngestAgent,
     TransitGamifierAgent,
 )
+from .security_agents import EvalAndGuardrailAgent
 
 __all__ = [
     "ProjectOnboardingAgent",
@@ -45,4 +45,5 @@ __all__ = [
     "PartnerIntegrationAgent",
     "MultimodalIngestionAgent",
     "LocalizationAndNarrationAgent",
+    "LifestyleEstimationAgent",
 ]

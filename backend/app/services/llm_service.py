@@ -86,7 +86,11 @@ class AgnosticModel:
                 "manufacturing of hardware, cloud data centre energy use, and downstream usage patterns. "
                 "Tracking and reducing these emissions is critical for comprehensive carbon accounting."
             )
-        elif "least energy" in prompt_lower or "energy for inference" in prompt_lower or "efficient model" in prompt_lower:
+        elif (
+            "least energy" in prompt_lower
+            or "energy for inference" in prompt_lower
+            or "efficient model" in prompt_lower
+        ):
             response_text += (
                 "The most energy-efficient models for inference are lightweight flash-tier models. "
                 "Gemini Flash (gemini-2.5-flash and gemini-1.5-flash) consumes approximately 0.002 kWh "

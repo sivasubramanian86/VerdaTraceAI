@@ -1,22 +1,20 @@
-import pytest
 import asyncio
-import json
 import os
-import sys
 import runpy
 from unittest.mock import MagicMock, patch
-from fastapi import FastAPI, Request
-from fastapi.testclient import TestClient
-from fastapi.exceptions import RequestValidationError
 
-from app.agents.adk_core import BaseAgent, SequentialAgent, ParallelAgent, CoordinatorAgent, SessionState
-from app.agents.orchestrator import OrchestratorAgent, orchestrator
+import pytest
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+
+from app.agents.adk_core import BaseAgent, CoordinatorAgent, ParallelAgent, SequentialAgent, SessionState
+from app.agents.orchestrator import OrchestratorAgent
 from app.agents.specialists.core_agents import OptimizationStrategyAgent
 from app.agents.specialists.rag_agents import AgenticRAGExplainerAgent, GreenCopilotChatAgent, MCPDataConnectorAgent
-from app.agents.specialists.scope3_agents import Scope3UnstructuredIngestAgent, LifestyleEstimationAgent
-from app.api import router, local_loops_db
-from app.exceptions import ValidationError, ResourceNotFoundError, VerdaTraceException
-from app.services.llm_service import llm_service, LLMService, AgnosticModel
+from app.agents.specialists.scope3_agents import LifestyleEstimationAgent, Scope3UnstructuredIngestAgent
+from app.api import local_loops_db, router
+from app.exceptions import ResourceNotFoundError, ValidationError, VerdaTraceException
+from app.services.llm_service import AgnosticModel, LLMService
 
 # ---------------------------------------------------------------------------
 # 1. app/agents/adk_core.py Gaps
@@ -82,7 +80,7 @@ async def test_orchestrator_fallback_intent() -> None:
 @pytest.mark.asyncio
 async def test_optimization_strategy_null_model_branches() -> None:
     agent = OptimizationStrategyAgent()
-    
+
     with patch("app.services.llm_service.llm_service.get_flash_model", return_value=None):
         # Test AWS
         res_aws = await agent.execute({"provider": "aws"}, SessionState())
@@ -105,7 +103,7 @@ async def test_optimization_strategy_generate_exception() -> None:
     agent = OptimizationStrategyAgent()
     mock_model = MagicMock()
     mock_model.generate_content.side_effect = Exception("Vertex limit exceeded")
-    
+
     with patch("app.services.llm_service.llm_service.get_flash_model", return_value=mock_model):
         res = await agent.execute({"provider": "gcp"}, SessionState())
         assert any("Error generating optimizations" in r for r in res["recommendations"])
@@ -118,7 +116,7 @@ async def test_optimization_strategy_generate_exception() -> None:
 @pytest.mark.asyncio
 async def test_rag_explainer_null_model_and_exception() -> None:
     agent = AgenticRAGExplainerAgent()
-    
+
     # Null model
     with patch("app.services.llm_service.llm_service.get_pro_model", return_value=None):
         res_null = await agent.execute({"query": "testing"}, SessionState())
@@ -134,7 +132,7 @@ async def test_rag_explainer_null_model_and_exception() -> None:
 @pytest.mark.asyncio
 async def test_green_copilot_chat_null_model_and_exception() -> None:
     agent = GreenCopilotChatAgent()
-    
+
     # Null model
     with patch("app.services.llm_service.llm_service.get_pro_model", return_value=None):
         res_null = await agent.execute({"query": "testing"}, SessionState())
@@ -161,7 +159,7 @@ async def test_mcp_data_connector_recommendations() -> None:
 @pytest.mark.asyncio
 async def test_lifestyle_onboarding_guardian_and_heavyweight() -> None:
     agent = LifestyleEstimationAgent()
-    
+
     # Eco-Guardian: Total co2 < 3000
     res_guardian = await agent.execute({
         "driving_km": 0,
@@ -187,7 +185,7 @@ async def test_lifestyle_onboarding_guardian_and_heavyweight() -> None:
 @pytest.mark.asyncio
 async def test_scope3_unstructured_ingest_real_llm_flow() -> None:
     agent = Scope3UnstructuredIngestAgent()
-    
+
     # Mock a model that does NOT have the 'provider' attribute to trigger the real LLM flow
     mock_model = MagicMock(spec=["generate_content"])
     mock_response = MagicMock()
@@ -234,15 +232,17 @@ def test_api_loops_clean_duplicates_and_not_found() -> None:
     app = FastAPI()
     app.include_router(router)
     client = TestClient(app)
-    
+
     # Pre-populate a digital mission in DB to verify it can be completed
-    local_loops_db["digital"]["missions"] = [{"id": "clean_duplicates", "title": "Clean duplicates", "credits_reward": 50, "status": "active"}]
-    
+    local_loops_db["digital"]["missions"] = [
+        {"id": "clean_duplicates", "title": "Clean duplicates", "credits_reward": 50, "status": "active"}
+    ]
+
     # 1. clean_duplicates mission
     response = client.post("/loops/digital/mission/clean_duplicates")
     assert response.status_code == 200
     assert response.json()["status"] == "success"
-    
+
     # 2. Mission not found
     response = client.post("/loops/digital/mission/non_existent")
     assert response.status_code == 200
@@ -252,11 +252,14 @@ def test_api_loops_circular_borrow_existing() -> None:
     app = FastAPI()
     app.include_router(router)
     client = TestClient(app)
-    
+
     # Ensure local_loops_db contains the item
     local_loops_db["circular"] = [{"name": "LED Monitor", "status": "available", "id": "item_123"}]
-    
-    response = client.post("/loops/circular", json={"item_name": "LED Monitor", "owner": "Neighbor", "action": "borrow"})
+
+    response = client.post(
+        "/loops/circular",
+        json={"item_name": "LED Monitor", "owner": "Neighbor", "action": "borrow"}
+    )
     assert response.status_code == 200
     assert response.json()["action"] == "borrow"
     # The status should change to borrowed
@@ -363,7 +366,11 @@ def test_main_exception_handlers() -> None:
 
     res = client.get("/test-general-exc")
     assert res.status_code == 500
-    assert res.json() == {"status": "error", "error_code": "INTERNAL_SERVER_ERROR", "message": "An unexpected error occurred on the server."}
+    assert res.json() == {
+        "status": "error",
+        "error_code": "INTERNAL_SERVER_ERROR",
+        "message": "An unexpected error occurred on the server.",
+    }
 
     # 3. RequestValidationError Handler
     # Trigger by sending invalid payload to an existing post endpoint

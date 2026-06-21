@@ -86,7 +86,10 @@ def test_unstructured_ingestion() -> None:
 
 def test_get_emissions() -> None:
     """Verify emissions calculation endpoint."""
-    response = client.get("/api/v1/projects/proj_123/emissions?provider=gcp&region=us-central1&model_family=gemini-2.5-flash")
+    response = client.get(
+        "/api/v1/projects/proj_123/emissions"
+        "?provider=gcp&region=us-central1&model_family=gemini-2.5-flash"
+    )
     assert response.status_code == 200
     data = response.json()
     assert data["project_id"] == "proj_123"
