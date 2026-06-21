@@ -10,7 +10,7 @@ $serviceName  = "verdatrace-backend"
 $imageName    = "gcr.io/$gcpProjectId/$serviceName`:latest"
 
 # Comma-separated list of EXACT allowed origins (no trailing slash, no wildcard)
-$allowedOrigins = "https://verdatraceai.web.app,https://verdatraceai.firebaseapp.com"
+$allowedOrigins = "https://verdatraceai.web.app\,https://verdatraceai.firebaseapp.com"
 
 Write-Host "=============================================" -ForegroundColor Cyan
 Write-Host "  VerdaTraceAI — Cloud Run Backend Deploy"   -ForegroundColor Cyan
@@ -35,7 +35,7 @@ gcloud services enable `
 
 # ─── Step 3: Build via Cloud Build → push to Container Registry ──────────────
 Write-Host "`n[3/5] Submitting build to Cloud Build..." -ForegroundColor Yellow
-Push-Location ../backend
+Push-Location "$PSScriptRoot/../backend"
 try {
     gcloud builds submit `
       --tag $imageName `
@@ -47,20 +47,35 @@ try {
 
 # ─── Step 4: Deploy to Cloud Run ─────────────────────────────────────────────
 Write-Host "`n[4/5] Deploying to Cloud Run..." -ForegroundColor Yellow
-gcloud run deploy $serviceName `
-  --image $imageName `
-  --region $region `
-  --platform managed `
-  --allow-unauthenticated `
-  --port 8080 `
-  --cpu 1 `
-  --memory 1Gi `
-  --min-instances 0 `
-  --max-instances 5 `
-  --timeout 60 `
-  --concurrency 80 `
-  --set-env-vars="GCP_PROJECT_ID=$gcpProjectId,VERTEX_REGION=$region,LLM_PROVIDER=vertex-ai,USE_ALLOYDB=False,ALLOWED_ORIGINS=$allowedOrigins" `
-  --project $gcpProjectId
+
+$envYamlContent = @"
+GCP_PROJECT_ID: "$gcpProjectId"
+VERTEX_REGION: "$region"
+LLM_PROVIDER: "vertex-ai"
+USE_ALLOYDB: "False"
+ALLOWED_ORIGINS: "https://verdatraceai.web.app,https://verdatraceai.firebaseapp.com"
+"@
+$envYamlPath = Join-Path $PSScriptRoot "env.yaml"
+Set-Content -Path $envYamlPath -Value $envYamlContent
+
+try {
+    gcloud run deploy $serviceName `
+      --image $imageName `
+      --region $region `
+      --platform managed `
+      --allow-unauthenticated `
+      --port 8080 `
+      --cpu 1 `
+      --memory 1Gi `
+      --min-instances 0 `
+      --max-instances 5 `
+      --timeout 60 `
+      --concurrency 80 `
+      --env-vars-file "$envYamlPath" `
+      --project $gcpProjectId
+} finally {
+    Remove-Item -Path $envYamlPath -ErrorAction SilentlyContinue
+}
 
 # ─── Step 5: Output ──────────────────────────────────────────────────────────
 Write-Host "`n[5/5] Deployment complete!" -ForegroundColor Green
