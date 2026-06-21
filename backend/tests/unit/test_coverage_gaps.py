@@ -19,6 +19,7 @@ from app.exceptions import VerdaTraceException
 # Section 1 — VerdaTraceException hierarchy
 # ---------------------------------------------------------------------------
 
+
 def test_verdatrace_exception_attributes() -> None:
     """VerdaTraceException stores message, error_code and status_code correctly."""
     exc = VerdaTraceException(
@@ -43,6 +44,7 @@ def test_verdatrace_exception_defaults() -> None:
 # Section 2 — SessionState CRUD
 # ---------------------------------------------------------------------------
 
+
 def test_session_state_set_get_delete() -> None:
     """SessionState set/get/delete operations work correctly."""
     state = SessionState()
@@ -63,6 +65,7 @@ def test_session_state_default_value() -> None:
 # ---------------------------------------------------------------------------
 # Section 3 — SequentialAgent error path
 # ---------------------------------------------------------------------------
+
 
 class _ErrorAgent(SequentialAgent):
     """Agent that always raises a VerdaTraceException from _run."""
@@ -125,9 +128,7 @@ async def test_unstructured_ingest_agent_aws_branch() -> None:
     """Scope3UnstructuredIngestAgent detects AWS from text and sets provider accordingly."""
     agent = Scope3UnstructuredIngestAgent()
     session = SessionState()
-    result = await agent._run(
-        {"unstructured_text": "Amazon AWS us-east-1 claude-3-5-sonnet 10000 tokens"}, session
-    )
+    result = await agent._run({"unstructured_text": "Amazon AWS us-east-1 claude-3-5-sonnet 10000 tokens"}, session)
     assert result["provider"] == "aws"
     assert result["region"] == "us-east-1"
     assert "audit_hash" in result
@@ -138,9 +139,7 @@ async def test_unstructured_ingest_agent_azure_branch() -> None:
     """Scope3UnstructuredIngestAgent detects Azure from text and sets provider."""
     agent = Scope3UnstructuredIngestAgent()
     session = SessionState()
-    result = await agent._run(
-        {"unstructured_text": "Microsoft Azure swedencentral gpt-4o-mini 5000"}, session
-    )
+    result = await agent._run({"unstructured_text": "Microsoft Azure swedencentral gpt-4o-mini 5000"}, session)
     assert result["provider"] == "azure"
     assert result["region"] == "swedencentral"
 
@@ -150,9 +149,7 @@ async def test_unstructured_ingest_agent_onprem_branch() -> None:
     """Scope3UnstructuredIngestAgent detects on-prem from text."""
     agent = Scope3UnstructuredIngestAgent()
     session = SessionState()
-    result = await agent._run(
-        {"unstructured_text": "on-prem private datacenter llama-3-8b 1000 200 50"}, session
-    )
+    result = await agent._run({"unstructured_text": "on-prem private datacenter llama-3-8b 1000 200 50"}, session)
     assert result["provider"] == "onprem"
     assert result["region"] == "local-onprem"
     # calls, prompt_tokens etc. are parsed from the numeric tokens in the text

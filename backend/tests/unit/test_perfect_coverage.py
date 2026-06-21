@@ -20,17 +20,20 @@ from app.services.llm_service import AgnosticModel, LLMService
 # 1. app/agents/adk_core.py Gaps
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.asyncio
 async def test_base_agent_execute_not_implemented() -> None:
     agent = BaseAgent("BaseTest", "Description")
     with pytest.raises(NotImplementedError):
         await agent.execute({}, SessionState())
 
+
 @pytest.mark.asyncio
 async def test_sequential_agent_run_default() -> None:
     agent = SequentialAgent("SeqTest", "Description")
     res = await agent._run({}, SessionState())
     assert res == {}
+
 
 @pytest.mark.asyncio
 async def test_parallel_agent_exception_handling() -> None:
@@ -47,6 +50,7 @@ async def test_parallel_agent_exception_handling() -> None:
     assert "ok" in result
     assert "errors" in result
     assert "Child agent failed" in result["errors"][0]
+
 
 @pytest.mark.asyncio
 async def test_coordinator_agent_no_route_and_route_not_implemented() -> None:
@@ -66,6 +70,7 @@ async def test_coordinator_agent_no_route_and_route_not_implemented() -> None:
 # 2. app/agents/orchestrator.py Gaps
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.asyncio
 async def test_orchestrator_fallback_intent() -> None:
     orch = OrchestratorAgent()
@@ -76,6 +81,7 @@ async def test_orchestrator_fallback_intent() -> None:
 # ---------------------------------------------------------------------------
 # 3. app/agents/specialists/core_agents.py Gaps
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_optimization_strategy_null_model_branches() -> None:
@@ -98,6 +104,7 @@ async def test_optimization_strategy_null_model_branches() -> None:
         res_gcp = await agent.execute({"provider": "gcp"}, SessionState())
         assert any("europe-west4" in r for r in res_gcp["recommendations"])
 
+
 @pytest.mark.asyncio
 async def test_optimization_strategy_generate_exception() -> None:
     agent = OptimizationStrategyAgent()
@@ -112,6 +119,7 @@ async def test_optimization_strategy_generate_exception() -> None:
 # ---------------------------------------------------------------------------
 # 4. app/agents/specialists/rag_agents.py Gaps
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_rag_explainer_null_model_and_exception() -> None:
@@ -129,6 +137,7 @@ async def test_rag_explainer_null_model_and_exception() -> None:
         res_err = await agent.execute({"query": "testing"}, SessionState())
         assert "Failed to generate explanation" in res_err["explanation"]
 
+
 @pytest.mark.asyncio
 async def test_green_copilot_chat_null_model_and_exception() -> None:
     agent = GreenCopilotChatAgent()
@@ -145,6 +154,7 @@ async def test_green_copilot_chat_null_model_and_exception() -> None:
         res_err = await agent.execute({"query": "testing"}, SessionState())
         assert "Chat failure" in res_err["response"]
 
+
 @pytest.mark.asyncio
 async def test_mcp_data_connector_recommendations() -> None:
     agent = MCPDataConnectorAgent()
@@ -156,31 +166,39 @@ async def test_mcp_data_connector_recommendations() -> None:
 # 5. app/agents/specialists/scope3_agents.py Gaps
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.asyncio
 async def test_lifestyle_onboarding_guardian_and_heavyweight() -> None:
     agent = LifestyleEstimationAgent()
 
     # Eco-Guardian: Total co2 < 3000
-    res_guardian = await agent.execute({
-        "driving_km": 0,
-        "diet_type": "vegan",
-        "electricity_kwh": 0,
-        "heating_source": "none",
-        "shopping_level": "low",
-        "recycling": True
-    }, SessionState())
+    res_guardian = await agent.execute(
+        {
+            "driving_km": 0,
+            "diet_type": "vegan",
+            "electricity_kwh": 0,
+            "heating_source": "none",
+            "shopping_level": "low",
+            "recycling": True,
+        },
+        SessionState(),
+    )
     assert res_guardian["sustainability_rank"] == "Eco-Guardian"
 
     # Carbon Heavyweight: Total co2 >= 10000
-    res_heavy = await agent.execute({
-        "driving_km": 100000,
-        "diet_type": "meat-heavy",
-        "electricity_kwh": 5000,
-        "heating_source": "gas",
-        "shopping_level": "high",
-        "recycling": False
-    }, SessionState())
+    res_heavy = await agent.execute(
+        {
+            "driving_km": 100000,
+            "diet_type": "meat-heavy",
+            "electricity_kwh": 5000,
+            "heating_source": "gas",
+            "shopping_level": "high",
+            "recycling": False,
+        },
+        SessionState(),
+    )
     assert res_heavy["sustainability_rank"] == "Carbon Heavyweight"
+
 
 @pytest.mark.asyncio
 async def test_scope3_unstructured_ingest_real_llm_flow() -> None:
@@ -209,13 +227,16 @@ async def test_scope3_unstructured_ingest_real_llm_flow() -> None:
 # 6. app/api.py Gaps
 # ---------------------------------------------------------------------------
 
+
 def test_api_load_mcp_server_exception_and_mock_server() -> None:
     # Trigger exception in load_mcp_server by patching spec_from_file_location
     with patch("importlib.util.spec_from_file_location", side_effect=ValueError("import fail")):
         from app.api import load_mcp_server
+
         server = load_mcp_server()
         assert server.call_tool("tool", {}) == '{"status": "mocked", "msg": "MCP offline"}'
         assert "optimizes carbon" in server.get_prompt("prompt", {})
+
 
 @pytest.mark.asyncio
 async def test_api_mcp_tool_json_decode_error() -> None:
@@ -227,6 +248,7 @@ async def test_api_mcp_tool_json_decode_error() -> None:
         response = client.post("/mcp/tool/test_tool", json={"arguments": {}})
         assert response.status_code == 200
         assert response.json() == {"response": "plain-text-response"}
+
 
 def test_api_loops_clean_duplicates_and_not_found() -> None:
     app = FastAPI()
@@ -248,6 +270,7 @@ def test_api_loops_clean_duplicates_and_not_found() -> None:
     assert response.status_code == 200
     assert response.json() == {"status": "error", "message": "Mission not found"}
 
+
 def test_api_loops_circular_borrow_existing() -> None:
     app = FastAPI()
     app.include_router(router)
@@ -257,8 +280,7 @@ def test_api_loops_circular_borrow_existing() -> None:
     local_loops_db["circular"] = [{"name": "LED Monitor", "status": "available", "id": "item_123"}]
 
     response = client.post(
-        "/loops/circular",
-        json={"item_name": "LED Monitor", "owner": "Neighbor", "action": "borrow"}
+        "/loops/circular", json={"item_name": "LED Monitor", "owner": "Neighbor", "action": "borrow"}
     )
     assert response.status_code == 200
     assert response.json()["action"] == "borrow"
@@ -270,25 +292,31 @@ def test_api_loops_circular_borrow_existing() -> None:
 # 7. app/evals.py Gaps
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.asyncio
 async def test_run_evals_unstable_json() -> None:
     from app.evals import run_evals
+
     # Mock orchestrator to return empty dict (missing response key)
     with patch("app.evals.orchestrator.execute", return_value={"wrong_key": "val"}):
         success = await run_evals()
         assert success is False
 
+
 @pytest.mark.asyncio
 async def test_run_evals_missing_keywords() -> None:
     from app.evals import run_evals
+
     # Mock orchestrator to return a response without matching keywords
     with patch("app.evals.orchestrator.execute", return_value={"response": "unrelated gibberish"}):
         success = await run_evals()
         assert success is False
 
+
 @pytest.mark.asyncio
 async def test_run_evals_negative_metrics() -> None:
     from app.evals import run_evals
+
     # Mock orchestrator execution returns
     def mock_exec(inputs, session):
         # For the chat test cases
@@ -301,9 +329,11 @@ async def test_run_evals_negative_metrics() -> None:
         success = await run_evals()
         assert success is False
 
+
 @pytest.mark.asyncio
 async def test_run_evals_invalid_green_score() -> None:
     from app.evals import run_evals
+
     def mock_exec(inputs, session):
         if inputs.get("intent") == "chat":
             return {"response": "europe-west4 Eemshaven cache footprint scope 3 emissions flash gemini"}
@@ -312,6 +342,7 @@ async def test_run_evals_invalid_green_score() -> None:
     with patch("app.evals.orchestrator.execute", side_effect=mock_exec):
         success = await run_evals()
         assert success is False
+
 
 def test_evals_main_block() -> None:
     # Mock orchestrator.execute so the real run_evals succeeds organically
@@ -330,10 +361,12 @@ def test_evals_main_block() -> None:
 # 8. app/exceptions.py Gaps
 # ---------------------------------------------------------------------------
 
+
 def test_validation_error_init() -> None:
     err = ValidationError("Bad schema")
     assert err.status_code == 422
     assert err.error_code == "VALIDATION_ERROR"
+
 
 def test_resource_not_found_init() -> None:
     err = ResourceNotFoundError("Not there")
@@ -345,8 +378,10 @@ def test_resource_not_found_init() -> None:
 # 9. app/main.py Gaps
 # ---------------------------------------------------------------------------
 
+
 def test_main_exception_handlers() -> None:
     from app.main import app
+
     client = TestClient(app, raise_server_exceptions=False)
 
     # 1. VerdaTraceException Handler
@@ -379,6 +414,7 @@ def test_main_exception_handlers() -> None:
     assert "error_code" in res.json()
     assert res.json()["error_code"] == "VALIDATION_ERROR"
 
+
 def test_main_uvicorn_run() -> None:
     with patch("uvicorn.run") as mock_run:
         runpy.run_path("app/main.py", run_name="__main__")
@@ -389,16 +425,19 @@ def test_main_uvicorn_run() -> None:
 # 10. app/services/llm_service.py Gaps
 # ---------------------------------------------------------------------------
 
+
 def test_agnostic_model_spanish_copilot_branch() -> None:
     model = AgnosticModel("stub", "model")
     res = model.generate_content("green copilot en español hola como region")
     assert "europe-west4" in res.text
     assert "energia libre" in res.text.lower() or "libre de carbono" in res.text.lower()
 
+
 def test_agnostic_model_generic_english_fallback() -> None:
     model = AgnosticModel("stub", "model")
     res = model.generate_content("some completely random text")
     assert "optimize the carbon footprint" in res.text
+
 
 def test_llm_service_initialization_exceptions() -> None:
     # Test Vertex AI initialization exception path
@@ -415,6 +454,7 @@ def test_llm_service_initialization_exceptions() -> None:
         mock_settings.LLM_PROVIDER = "openai"
         service = LLMService()
         assert service.is_initialized is False
+
 
 def test_llm_service_get_model_exceptions() -> None:
     # 1. Primary failure, fallback success
@@ -440,6 +480,7 @@ def test_llm_service_get_model_exceptions() -> None:
         model = service._get_model("primary", "fallback")
         assert isinstance(model, AgnosticModel)
         assert model.model_name == "primary"
+
 
 def test_llm_service_override_model() -> None:
     service = LLMService()

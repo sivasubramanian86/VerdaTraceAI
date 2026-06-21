@@ -15,6 +15,7 @@ from app.services.llm_service import llm_service
 # Ensure we use AgnosticModel stubs instead of attempting real Vertex AI connection during test execution
 llm_service.is_initialized = False
 
+
 @pytest.mark.asyncio
 async def test_project_onboarding_missing_name() -> None:
     """Verify onboarding agent returns error if name is missing."""

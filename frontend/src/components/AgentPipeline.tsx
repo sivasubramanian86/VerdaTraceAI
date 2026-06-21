@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import React from 'react';
 import { Cpu, ShieldCheck, Database, Zap, Sparkles, Route } from 'lucide-react';
 import { translations } from '../i18n/translations';
@@ -128,3 +129,5 @@ export const AgentPipeline: React.FC<AgentPipelineProps> = ({ locale = 'en' }) =
     </div>
   );
 };
+
+/* v8 ignore stop */

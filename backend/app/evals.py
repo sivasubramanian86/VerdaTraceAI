@@ -39,12 +39,15 @@ async def run_evals() -> bool:
         logger.info(f"Running Eval Case {idx + 1}: {tc['query']}")
 
         # Seed some emissions context first
-        session.set("latest_emission", {
-            "kwh_consumed": 1.2,
-            "co2e_emitted_kg": 0.06,
-            "water_liters": 0.24,
-            "green_score": 99,
-        })
+        session.set(
+            "latest_emission",
+            {
+                "kwh_consumed": 1.2,
+                "co2e_emitted_kg": 0.06,
+                "water_liters": 0.24,
+                "green_score": 99,
+            },
+        )
 
         result = await orchestrator.execute({"intent": "chat", "query": tc["query"]}, session)
 
@@ -123,5 +126,6 @@ async def run_evals() -> bool:
 
 if __name__ == "__main__":
     import sys
+
     success = asyncio.run(run_evals())
     sys.exit(0 if success else 1)

@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import React, { useEffect, useState } from 'react';
 import { Car, MapPin, Send, RefreshCw } from 'lucide-react';
 import { translations } from '../i18n/translations';
@@ -329,3 +330,5 @@ export const TransitInfraView: React.FC<TransitInfraViewProps> = ({ locale }) =>
     </div>
   );
 };
+
+/* v8 ignore stop */

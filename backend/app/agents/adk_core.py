@@ -76,6 +76,7 @@ class SequentialAgent(BaseAgent):
             Resulting agent dictionary payload, or an error dict on domain errors.
         """
         from app.exceptions import VerdaTraceException  # local import avoids circular deps
+
         try:
             return await self._run(inputs, session)
         except VerdaTraceException as exc:

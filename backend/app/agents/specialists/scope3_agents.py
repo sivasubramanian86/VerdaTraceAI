@@ -657,8 +657,7 @@ class LocalizationAndNarrationAgent(SequentialAgent):
             },
             "hi": {
                 "greeting": (
-                    "\u0928\u092e\u0938\u094d\u0924\u0947, \u092e\u0948\u0902 "
-                    "VerdaTrace Copilot \u0939\u0942\u0902."
+                    "\u0928\u092e\u0938\u094d\u0924\u0947, \u092e\u0948\u0902 VerdaTrace Copilot \u0939\u0942\u0902."
                 ),
                 "carbon_saving": "\u0906\u092a\u0915\u0940 CO2 \u092c\u091a\u0924: {value} kg.",
                 "recommendation": (

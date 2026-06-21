@@ -5,6 +5,7 @@ Validates:
 - Each pair's expected keywords appear (case-insensitive) in the agent response
 - Emission sanity checks: kwh >= 0, co2 >= 0, 0 <= green_score <= 100
 """
+
 import pytest
 
 from app.agents.adk_core import SessionState
@@ -16,22 +17,27 @@ from app.services.llm_service import llm_service
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 async def _chat_result(query: str) -> dict:
     """Run a single chat query through the orchestrator and return the result."""
     llm_service.is_initialized = False
     session = SessionState()
-    session.set("latest_emission", {
-        "kwh_consumed": 1.2,
-        "co2e_emitted_kg": 0.06,
-        "water_liters": 0.24,
-        "green_score": 99,
-    })
+    session.set(
+        "latest_emission",
+        {
+            "kwh_consumed": 1.2,
+            "co2e_emitted_kg": 0.06,
+            "water_liters": 0.24,
+            "green_score": 99,
+        },
+    )
     return await orchestrator.execute({"intent": "chat", "query": query}, session)
 
 
 # ---------------------------------------------------------------------------
 # Pair 1 — europe-west4 / Eemshaven
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_eval_pair_1_europe_west4() -> None:
@@ -48,14 +54,14 @@ async def test_eval_pair_1_europe_west4() -> None:
     response_text = result["response"].lower()
     for keyword in expected_keywords:
         assert keyword.lower() in response_text, (
-            f"Expected keyword '{keyword}' not found in response for pair 1.\n"
-            f"Response: {result['response']}"
+            f"Expected keyword '{keyword}' not found in response for pair 1.\nResponse: {result['response']}"
         )
 
 
 # ---------------------------------------------------------------------------
 # Pair 2 — semantic caching
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_eval_pair_2_semantic_caching() -> None:
@@ -72,14 +78,14 @@ async def test_eval_pair_2_semantic_caching() -> None:
     response_text = result["response"].lower()
     for keyword in expected_keywords:
         assert keyword.lower() in response_text, (
-            f"Expected keyword '{keyword}' not found in response for pair 2.\n"
-            f"Response: {result['response']}"
+            f"Expected keyword '{keyword}' not found in response for pair 2.\nResponse: {result['response']}"
         )
 
 
 # ---------------------------------------------------------------------------
 # Pair 3 — reduce AI workload carbon footprint
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_eval_pair_3_carbon_footprint() -> None:
@@ -96,14 +102,14 @@ async def test_eval_pair_3_carbon_footprint() -> None:
     response_text = result["response"].lower()
     for keyword in expected_keywords:
         assert keyword.lower() in response_text, (
-            f"Expected keyword '{keyword}' not found in response for pair 3.\n"
-            f"Response: {result['response']}"
+            f"Expected keyword '{keyword}' not found in response for pair 3.\nResponse: {result['response']}"
         )
 
 
 # ---------------------------------------------------------------------------
 # Pair 4 — Scope 3 emissions
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_eval_pair_4_scope3_emissions() -> None:
@@ -120,14 +126,14 @@ async def test_eval_pair_4_scope3_emissions() -> None:
     response_text = result["response"].lower()
     for keyword in expected_keywords:
         assert keyword.lower() in response_text, (
-            f"Expected keyword '{keyword}' not found in response for pair 4.\n"
-            f"Response: {result['response']}"
+            f"Expected keyword '{keyword}' not found in response for pair 4.\nResponse: {result['response']}"
         )
 
 
 # ---------------------------------------------------------------------------
 # Pair 5 — least-energy model
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_eval_pair_5_least_energy_model() -> None:
@@ -144,14 +150,14 @@ async def test_eval_pair_5_least_energy_model() -> None:
     response_text = result["response"].lower()
     for keyword in expected_keywords:
         assert keyword.lower() in response_text, (
-            f"Expected keyword '{keyword}' not found in response for pair 5.\n"
-            f"Response: {result['response']}"
+            f"Expected keyword '{keyword}' not found in response for pair 5.\nResponse: {result['response']}"
         )
 
 
 # ---------------------------------------------------------------------------
 # Emission sanity checks
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_emission_sanity_checks() -> None:
@@ -206,6 +212,7 @@ async def test_emission_sanity_checks() -> None:
 # ---------------------------------------------------------------------------
 # Full harness smoke test (backward-compatible)
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_run_evals_harness() -> None:

@@ -144,12 +144,12 @@ from app.agents.specialists.scope3_agents import Scope3CommerceAgent  # noqa: E4
 
 _CREDIT_CASES = [
     # (amount_spent, is_local_override, expected_credits)
-    (10.00, True, 55),    # int(10.00 * 0.5) + 50 = 5 + 50 = 55
+    (10.00, True, 55),  # int(10.00 * 0.5) + 50 = 5 + 50 = 55
     (100.00, True, 100),  # int(100.00 * 0.5) + 50 = 50 + 50 = 100
-    (0.01, True, 50),     # int(0.01 * 0.5) + 50 = 0 + 50 = 50
-    (10.00, False, 1),    # int(10.00 * 0.1) = 1
+    (0.01, True, 50),  # int(0.01 * 0.5) + 50 = 0 + 50 = 50
+    (10.00, False, 1),  # int(10.00 * 0.1) = 1
     (100.00, False, 10),  # int(100.00 * 0.1) = 10
-    (0.01, False, 0),     # int(0.01 * 0.1) = 0
+    (0.01, False, 0),  # int(0.01 * 0.1) = 0
 ]
 
 

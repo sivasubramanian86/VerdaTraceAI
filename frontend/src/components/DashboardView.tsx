@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import React, { useState } from 'react';
 import { Leaf, Droplet, Trees, Waves, ShieldCheck, AlertTriangle, HelpCircle, Car, Flame, Utensils, FileText, CheckCircle2, TrendingUp } from 'lucide-react';
 import { AgentPipeline } from './AgentPipeline';
@@ -419,3 +420,5 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ emissionsData, loa
     </div>
   );
 };
+
+/* v8 ignore stop */

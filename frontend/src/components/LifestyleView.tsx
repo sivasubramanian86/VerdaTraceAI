@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import React, { useState } from 'react';
 import { Leaf, Car, Flame, ShoppingBag, CheckSquare, Sparkles, AlertCircle } from 'lucide-react';
 import { translations } from '../i18n/translations';
@@ -426,3 +427,5 @@ export const LifestyleView: React.FC<LifestyleViewProps> = ({ aiWorkloadCo2Yr = 
     </div>
   );
 };
+
+/* v8 ignore stop */

@@ -14,6 +14,7 @@ router = APIRouter()
 
 class ProjectCreateRequest(BaseModel):
     """Request payload schema for creating a project."""
+
     name: str = Field(..., min_length=1, max_length=100, description="Project name")
     provider: str = Field("gcp", pattern="^(gcp|aws|azure|onprem)$", description="Cloud provider")
     region: str = Field("us-central1", min_length=2, max_length=30, description="Cloud region")
@@ -23,6 +24,7 @@ class ProjectCreateRequest(BaseModel):
 
 class ChatRequest(BaseModel):
     """Request payload schema for green chat assistant query."""
+
     query: str = Field(..., min_length=1, max_length=5000, description="Conversational query")
     provider: str = Field("gcp", pattern="^(gcp|aws|azure|onprem)$", description="Cloud provider")
     region: str = Field("us-central1", min_length=2, max_length=30, description="Cloud region")
@@ -38,16 +40,19 @@ class ChatRequest(BaseModel):
 
 class MCPToolRequest(BaseModel):
     """Request payload schema for calling an MCP tool."""
+
     arguments: dict[str, Any] = Field(default_factory=dict, description="Tool arguments")
 
 
 class EvalRequest(BaseModel):
     """Request payload schema for content evaluation/guardrail check."""
+
     text: str = Field(..., min_length=1, max_length=10000, description="Text to evaluate for safety/accuracy")
 
 
 class LifestyleRequest(BaseModel):
     """Request payload schema for lifestyle carbon footprint estimation."""
+
     driving_km: float = Field(12000.0, ge=0.0, le=500000.0, description="Annual driving distance in km")
     vehicle_type: str = Field("gas", pattern="^(gas|ev|none)$", description="Vehicle propulsion type")
     diet_type: str = Field("average", pattern="^(vegan|vegetarian|average|meat-heavy)$", description="Diet pattern")
@@ -59,11 +64,13 @@ class LifestyleRequest(BaseModel):
 
 class UnstructuredIngestRequest(BaseModel):
     """Request payload schema for ingesting unstructured text reports."""
+
     unstructured_text: str = Field(..., min_length=1, max_length=50000, description="Raw text of emissions report")
 
 
 class DigitalWasteRequest(BaseModel):
     """Request payload schema for calculating digital carbon waste footprint."""
+
     emails_count: int = Field(0, ge=0, le=1000000, description="Active inbox email count")
     cloud_storage_gb: float = Field(0.0, ge=0.0, le=100000.0, description="Cloud storage volume in GB")
     duplicate_media_count: int = Field(0, ge=0, le=100000, description="Number of duplicate media files")
@@ -72,6 +79,7 @@ class DigitalWasteRequest(BaseModel):
 
 class CommerceLogRequest(BaseModel):
     """Request payload schema for logging a commercial transaction."""
+
     store_name: str = Field(..., min_length=1, max_length=200, description="Merchant name")
     location: str = Field(..., min_length=1, max_length=200, description="Transaction location")
     amount_spent: float = Field(..., ge=0.0, le=10000000.0, description="Transaction amount")
@@ -80,18 +88,21 @@ class CommerceLogRequest(BaseModel):
 
 class FoodScanRequest(BaseModel):
     """Request payload schema for scanning product food miles."""
+
     product_name: str = Field(..., min_length=1, max_length=200, description="Product identifier")
     origin: str = Field(..., min_length=1, max_length=200, description="Origin location")
 
 
 class TransitTripLogRequest(BaseModel):
     """Request payload schema for logging a travel trip."""
+
     mode: str = Field(..., min_length=1, max_length=50, description="Transit mode (e.g. Metro)")
     distance_km: float = Field(..., ge=0.0, le=100000.0, description="Trip distance in km")
 
 
 class InfraFeedbackRequest(BaseModel):
     """Request payload schema for crowdsourced infrastructure feedback."""
+
     description: str = Field(..., min_length=1, max_length=1000, description="Description of the infra issue")
     latitude: float = Field(..., ge=-90.0, le=90.0, description="Latitude coordinate")
     longitude: float = Field(..., ge=-180.0, le=180.0, description="Longitude coordinate")
@@ -100,6 +111,7 @@ class InfraFeedbackRequest(BaseModel):
 
 class CircularItemShareRequest(BaseModel):
     """Request payload schema for lending or borrowing tools/items."""
+
     item_name: str = Field(..., min_length=1, max_length=200, description="Item to share")
     owner: str = Field("Neighbor", min_length=1, max_length=100, description="Lender name")
     action: str = Field("lend", pattern="^(lend|borrow)$", description="Share action (lend/borrow)")
@@ -107,16 +119,15 @@ class CircularItemShareRequest(BaseModel):
 
 class PartnerCheckoutRequest(BaseModel):
     """Request payload schema for commercial cart carbon offsets."""
+
     cart_items: list[dict[str, Any]] = Field(default_factory=list, description="Checkout cart items")
 
 
 class LocalizeNarrationRequest(BaseModel):
     """Request payload schema for text localization and audio narration request."""
+
     text: str = Field(..., min_length=1, max_length=10000, description="Content to translate and narrate")
     target_lang: str = Field("en", min_length=2, max_length=5, description="Target language code")
-
-
-
 
 
 def load_mcp_server() -> Any:
@@ -670,9 +681,7 @@ async def get_credits_ledger() -> dict:
 async def partner_checkout(payload: PartnerCheckoutRequest) -> dict:
     """Exposes B2B2C Sustainable checkout API via PartnerIntegrationAgent."""
     session = SessionState()
-    result = await orchestrator.execute(
-        {"intent": "partner_cart", "cart_items": payload.cart_items}, session
-    )
+    result = await orchestrator.execute({"intent": "partner_cart", "cart_items": payload.cart_items}, session)
     return result
 
 

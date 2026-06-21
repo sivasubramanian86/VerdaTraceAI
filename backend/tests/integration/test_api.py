@@ -87,8 +87,7 @@ def test_unstructured_ingestion() -> None:
 def test_get_emissions() -> None:
     """Verify emissions calculation endpoint."""
     response = client.get(
-        "/api/v1/projects/proj_123/emissions"
-        "?provider=gcp&region=us-central1&model_family=gemini-2.5-flash"
+        "/api/v1/projects/proj_123/emissions?provider=gcp&region=us-central1&model_family=gemini-2.5-flash"
     )
     assert response.status_code == 200
     data = response.json()
@@ -106,7 +105,7 @@ def test_get_lifestyle_emissions() -> None:
         "electricity_kwh": 3500,
         "heating_source": "electric",
         "shopping_level": "medium",
-        "recycling": True
+        "recycling": True,
     }
     response = client.post("/api/v1/lifestyle/emissions", json=payload)
     assert response.status_code == 200
@@ -123,12 +122,7 @@ def test_digital_loops_endpoints() -> None:
     assert "emails_count" in response_get.json()
 
     # Test POST update
-    payload = {
-        "emails_count": 2000,
-        "cloud_storage_gb": 120.5,
-        "duplicate_media_count": 15,
-        "ai_usage_count": 40
-    }
+    payload = {"emails_count": 2000, "cloud_storage_gb": 120.5, "duplicate_media_count": 15, "ai_usage_count": 40}
     response_post = client.post("/api/v1/loops/digital", json=payload)
     assert response_post.status_code == 200
     assert response_post.json()["digital_co2e_kg"] > 0
@@ -151,7 +145,7 @@ def test_commerce_loops_endpoints() -> None:
         "store_name": "Koramangala Greens",
         "location": "Bengaluru, India",
         "amount_spent": 450.0,
-        "is_local_override": False
+        "is_local_override": False,
     }
     response_post = client.post("/api/v1/loops/commerce", json=payload)
     assert response_post.status_code == 200
@@ -162,10 +156,7 @@ def test_commerce_loops_endpoints() -> None:
 def test_food_loops_endpoints() -> None:
     """Verify grocery scans and local swap recommendations."""
     # Test POST scan
-    payload = {
-        "product_name": "avocado",
-        "origin": "Mexico"
-    }
+    payload = {"product_name": "avocado", "origin": "Mexico"}
     response_post = client.post("/api/v1/loops/food/scan", json=payload)
     assert response_post.status_code == 200
     assert "local_swap" in response_post.json()
@@ -185,10 +176,7 @@ def test_transit_loops_endpoints() -> None:
     assert "feedbacks" in response_get.json()
 
     # Test POST log trip
-    payload = {
-        "mode": "Metro",
-        "distance_km": 12.5
-    }
+    payload = {"mode": "Metro", "distance_km": 12.5}
     response_post = client.post("/api/v1/loops/transit", json=payload)
     assert response_post.status_code == 200
     assert "co2e_saved_kg" in response_post.json()
@@ -198,7 +186,7 @@ def test_transit_loops_endpoints() -> None:
         "description": "Bike lane blocked by debris",
         "latitude": 12.93,
         "longitude": 77.62,
-        "issue_type": "broken_bike_lane"
+        "issue_type": "broken_bike_lane",
     }
     response_feedback = client.post("/api/v1/loops/transit/feedback", json=feedback_payload)
     assert response_feedback.status_code == 200
@@ -213,11 +201,7 @@ def test_circular_loops_endpoints() -> None:
     assert "items" in response_get.json()
 
     # Test POST share item
-    payload = {
-        "item_name": "drill machine",
-        "owner": "Raju",
-        "action": "lend"
-    }
+    payload = {"item_name": "drill machine", "owner": "Raju", "action": "lend"}
     response_post = client.post("/api/v1/loops/circular", json=payload)
     assert response_post.status_code == 200
     assert response_post.json()["credits_earned"] == 100
@@ -235,11 +219,7 @@ def test_credits_ledger_endpoint() -> None:
 
 def test_partner_checkout_endpoint() -> None:
     """Verify sustainable cart suggestions API."""
-    payload = {
-        "cart_items": [
-            {"name": "Imported Apples", "category": "fruit", "origin": "non-local", "price": 4.50}
-        ]
-    }
+    payload = {"cart_items": [{"name": "Imported Apples", "category": "fruit", "origin": "non-local", "price": 4.50}]}
     response = client.post("/api/v1/partner/checkout", json=payload)
     assert response.status_code == 200
     data = response.json()
@@ -249,10 +229,7 @@ def test_partner_checkout_endpoint() -> None:
 
 def test_localize_narration_endpoint() -> None:
     """Verify multilingual narration audio text generation."""
-    payload = {
-        "text": "Hello, welcome to green AI",
-        "target_lang": "hi"
-    }
+    payload = {"text": "Hello, welcome to green AI", "target_lang": "hi"}
     response = client.post("/api/v1/narration/localize", json=payload)
     assert response.status_code == 200
     data = response.json()

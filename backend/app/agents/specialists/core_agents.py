@@ -289,8 +289,7 @@ class OptimizationStrategyAgent(SequentialAgent):
                     "- Shift AWS workloads to us-west-2 (Oregon) to reduce carbon"
                     " intensity by 82% and water usage by 73%.",
                     "- Downsize to Claude 3 Haiku / Llama 3 8B to cut baseline GPU power footprint.",
-                    "- Sponsor verified ocean blue carbon projects (seagrass planting)"
-                    " to accelerate carbon capture.",
+                    "- Sponsor verified ocean blue carbon projects (seagrass planting) to accelerate carbon capture.",
                 ]
             elif provider == "azure":
                 recommendations = [

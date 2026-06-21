@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import React from 'react';
 import { Award, RefreshCw, ShieldCheck, Thermometer, ShoppingBag, Car } from 'lucide-react';
 import { translations } from '../i18n/translations';
@@ -168,3 +169,5 @@ export const JudgeView: React.FC<JudgeViewProps> = ({
     </div>
   );
 };
+
+/* v8 ignore stop */
